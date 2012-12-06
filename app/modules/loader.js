@@ -9,16 +9,15 @@ function(app, Backbone) {
   // Create a new module
   var Loader = {};
 
-  // This will fetch the tutorial template and render it.
   Loader.View = Backbone.View.extend({
 
-    DELAY: 3000,
+    DELAY: 5000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
 
     className: 'ZEEGA-loader-overlay',
-    template: 'loader',
+    template: 'bgbloader',
 
     initialize: function() {
       this.model.on('layer_loading', this.onLayerLoading, this );
@@ -54,17 +53,17 @@ function(app, Backbone) {
     onLayerLoading: function(layer) {
       this.layerCount++;
 
-      var item = '<li><i class="zitem-'+ layer.type.toLowerCase() +' zitem-30" data-id="'+ layer.id +'"></i></li>';
-      this.$('.ZEEGA-loading-layers').append(item);
+      //var item = '<li><i class="zitem-'+ layer.type.toLowerCase() +' zitem-30" data-id="'+ layer.id +'"></i></li>';
+      //this.$('.ZEEGA-loading-layers').append(item);
     },
 
     onLayerReady: function(layer) {
       this.layersReady++;
 
-      this.$("[data-id='" + layer.id + "']").addClass('loaded');
+      //this.$("[data-id='" + layer.id + "']").addClass('loaded');
 
-      this.$('.ZEEGA-loading-bar').stop().animate({
-        'width': (this.layersReady/this.layerCount*100) +'%'
+      this.$('.logo-splat').stop().animate({
+        'height': (this.layersReady/this.layerCount*100) +'%'
       });
       if(this.layersReady == this.layerCount) this.onCanPlay();
     },

@@ -1,0 +1,56 @@
+.ZEEGA-loader-overlay {
+	height: 100%;
+	position: absolute;
+	width: 100%;
+	z-index: 20;
+	left: 0;
+	top: 0;
+
+	.loader-content {
+		height: 550px;
+		left: 50%;
+		margin-left: -263px;
+		margin-top: -275px;
+		position: absolute;
+		top: 48%;
+		width: 526px;
+		z-index: 20;
+
+		.logo {
+			height: 471px;
+			margin: 0 auto;
+			position: relative;
+			width: 440px;
+
+			.logo-splat {
+				background: url(../img/logo-bgb-large-splat.png);
+				height: 0;
+				left: 0;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				z-index: 1;
+			}
+
+			.logo-text {
+				background: url(../img/logo-bgb-large-text.png);
+				height: 100%;
+				left: 0;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				z-index: 2;
+			}
+		}
+	}
+
+	.ZEEGA-loader-bg {
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+		z-index: 10;
+	}
+
+}
