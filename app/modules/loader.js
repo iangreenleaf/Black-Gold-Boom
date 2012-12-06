@@ -70,6 +70,7 @@ function(app, Backbone) {
 
     onCanPlay: function() {
       var _this = this;
+  
       _.delay(function(){
         _this.$el.fadeOut(function(){
           _this.remove();

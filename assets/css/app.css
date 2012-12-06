@@ -632,6 +632,7 @@ a:active {
   background-position: -60px -690px;
 }
 .ZEEGA-loader-overlay {
+  background: #fff;
   height: 100%;
   position: absolute;
   width: 100%;
@@ -645,7 +646,7 @@ a:active {
   margin-left: -263px;
   margin-top: -275px;
   position: absolute;
-  top: 48%;
+  top: 45%;
   width: 526px;
   z-index: 20;
 }
@@ -673,8 +674,26 @@ a:active {
   width: 100%;
   z-index: 2;
 }
+.ZEEGA-loader-overlay .loader-content .intro-text {
+  color: #000;
+  font-size: 20px;
+  line-height: 1.3em;
+  text-align: center;
+  margin-top: 27px;
+}
+.ZEEGA-loader-overlay .loader-logo-shelf {
+  background: #000;
+  bottom: 0;
+  height: 83px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 30;
+}
 .ZEEGA-loader-overlay .ZEEGA-loader-bg {
   height: 100%;
+  opacity: 0.5;
   left: 0;
   position: absolute;
   top: 0;
