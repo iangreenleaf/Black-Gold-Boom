@@ -120,11 +120,11 @@ module.exports = function(grunt) {
 		//  until documentation has been written.
 		server: {
 			// Ensure the favicon is mapped correctly.
-			files: { "favicon.ico": "favicon.ico" },
+			files: { "favicon.ico": "zeega.ico" },
 
 			debug: {
 				// Ensure the favicon is mapped correctly.
-				files: { "favicon.ico": "favicon.ico" },
+				files: { "favicon.ico": "zeega.ico" },
 
 				// Map `server:debug` to `debug` folders.
 				folders: {
@@ -139,7 +139,7 @@ module.exports = function(grunt) {
 				host: "0.0.0.0",
 
 				// Ensure the favicon is mapped correctly.
-				files: { "favicon.ico": "favicon.ico" },
+				files: { "favicon.ico": "zeega.ico" },
 
 				// Map `server:release` to `release` folders.
 				folders: {
