@@ -11,7 +11,7 @@ function(app, Backbone) {
 
   Loader.View = Backbone.View.extend({
 
-    DELAY: 2000,
+    DELAY: 3000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
