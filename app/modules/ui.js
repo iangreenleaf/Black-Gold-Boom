@@ -25,7 +25,6 @@ function(app, Backbone, Loader, Controls, Citations) {
 
   var FADE_OUT_DELAY = 3000;
 
-  // This will fetch the tutorial template and render it.
   UI.Layout = Backbone.Layout.extend({
     
     el: '#main',
