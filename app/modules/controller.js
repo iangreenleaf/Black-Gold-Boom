@@ -46,7 +46,7 @@ function(app, Backbone, State, UI) {
       });
       player.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('player: e:',e,obj);});
       player.load({
-        url: 'http://staging.zeega.org/api/projects/3662'
+        url: 'http://alpha.zeega.org/api/projects/3678'
       });
       app.player = player;
     }
