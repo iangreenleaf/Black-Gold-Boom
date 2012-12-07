@@ -43,22 +43,8 @@ function(app, Backbone, Loader, Controls, Citations) {
 
     afterRender: function() {
       app.state.set('base_rendered', true);
-      this.resetFadeOutTimer();
-    },
-
-    events : {
-      'mousemove': 'resetFadeOutTimer'
-    },
-
-    resetFadeOutTimer: function() {
-      var _this =  this;
-      this.citations.fadeIn();
-      if(this.timer) clearTimeout( this.timer );
-      this.timer = setTimeout(function(){
-        _this.citations.fadeOut();
-      }, FADE_OUT_DELAY);
     }
-
+  
   });
 
   // Required, return the module for AMD compliance
