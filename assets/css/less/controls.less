@@ -12,6 +12,14 @@
 @smallArrowThickness: 5px;
 @smallArrowSize: 30px;
 
+.ZEEGA-player-controls
+{
+	position: absolute;
+	top: 40%;
+	width: 100%;
+	z-index: 40;
+}
+
 .nav-arrow (@height:30px, @thickness: 10px, @color:#fff, @colorHover:orange, @opacity: 0.5, @opacityHover: 1)
 {
 	display:inline-block;
@@ -80,13 +88,6 @@
 			-webkit-filter: drop-shadow(8px -8px 6px rgba(0,0,0,0.5));
 		}
 	}
-}
-
-.ZEEGA-player-controls
-{
-	position: absolute;
-	top: 40%;
-	width: 100%;
 }
 
 .arrow

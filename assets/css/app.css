@@ -22,6 +22,7 @@ a:active {
   position: absolute;
   top: 40%;
   width: 100%;
+  z-index: 40;
 }
 .arrow {
   display: inline-block;
@@ -137,6 +138,7 @@ a:active {
   padding: 10px 0;
   position: absolute;
   width: 100%;
+  z-index: 20;
 }
 .ZEEGA-player-citations > ul {
   padding: 0 10px;
@@ -634,11 +636,11 @@ a:active {
 .ZEEGA-loader-overlay {
   background: #fff;
   height: 100%;
-  position: absolute;
-  width: 100%;
-  z-index: 20;
   left: 0;
+  position: absolute;
   top: 0;
+  width: 100%;
+  z-index: 60;
 }
 .ZEEGA-loader-overlay .loader-content {
   height: 550px;

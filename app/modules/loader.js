@@ -11,7 +11,7 @@ function(app, Backbone) {
 
   Loader.View = Backbone.View.extend({
 
-    DELAY: 5000,
+    DELAY: 2000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
@@ -69,14 +69,27 @@ function(app, Backbone) {
     },
 
     onCanPlay: function() {
+
       var _this = this;
   
       _.delay(function(){
-        _this.$el.fadeOut(function(){
-          _this.remove();
+
+        _this.$('.loader-content').fadeOut( 500, function() {
+
+          _.delay(function(){
+
+            _this.$el.fadeOut( 500, function(){
+              _this.remove();
+            });
+
+          }, 500);
+
         });
+
         _this.model.play();
-      },this.DELAY);
+
+      }, this.DELAY);
+
     }
 
   });
