@@ -7,16 +7,16 @@ define([
 function(app, Backbone) {
 
   // Create a new module
-  var Citations = {};
+  var Titles = {};
 
   // This will fetch the tutorial template and render it.
-  Citations.View = Backbone.View.extend({
+  Titles.View = Backbone.View.extend({
     
     visible : true,
 
     template: 'citations',
 
-    className: 'BGB-player-citations',
+    className: 'BGB-player-titles',
 
     serialize: function() {
         return this.model.toJSON();
@@ -30,6 +30,6 @@ function(app, Backbone) {
 
   });
 
-  return Citations;
+  return Titles;
 
 });

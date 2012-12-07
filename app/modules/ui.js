@@ -14,11 +14,11 @@ define([
   // Modules,
   'modules/loader',
   'modules/controls',
-  'modules/citations'
+  'modules/titles'
 
 ],
 
-function(app, Backbone, Loader, Controls, Citations) {
+function(app, Backbone, Loader, Controls, Titles) {
 
   // Create a new module
   var UI = {};
@@ -33,11 +33,11 @@ function(app, Backbone, Loader, Controls, Citations) {
 
       this.loader = new Loader.View({model: app.player});
       this.controls = new Controls.View({model: app.player});
-      this.citations = new Citations.View({model: app.player});
+      this.titles = new Titles.View({model: app.player});
 
       this.insertView( this.loader );
       this.insertView( this.controls );
-      this.insertView( this.citations );
+      this.insertView( this.titles );
       this.render();
     },
 
