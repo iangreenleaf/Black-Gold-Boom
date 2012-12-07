@@ -48,7 +48,19 @@ function(app, Backbone, State, UI) {
       player.load({
         url: 'http://alpha.zeega.org/api/projects/3678'
       });
+      player.on('frame_rendered window_resized', this.updateYoutubeSize, this);
       app.player = player;
+    },
+
+    updateYoutubeSize : function()
+    {
+      var width = window.innerHeight * (16 / 9);
+      var left = (window.innerWidth - width) / 2;
+      $('.ZEEGA-player .visual-element-video').css({
+        'height': window.innerHeight,
+        'width' : width,
+        'left' : left
+      });
     }
 
   });
