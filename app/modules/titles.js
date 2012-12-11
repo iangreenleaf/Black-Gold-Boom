@@ -19,7 +19,7 @@ function(app, Backbone) {
     className: 'BGB-player-titles',
 
     serialize: function() {
-        return this.model.toJSON();
+        return _.extend({title:''},this.model.toJSON());
     },
 
     initialize: function() {
