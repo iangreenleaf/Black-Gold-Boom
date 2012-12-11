@@ -3,4 +3,5 @@
 *.DS_Store
 /dist/
 index.html
+assets/css/app.css
 .htaccess
