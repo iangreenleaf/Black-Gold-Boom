@@ -14,7 +14,7 @@ function(app, Backbone) {
     
     visible : true,
 
-    template: 'citations',
+    template: 'titles',
 
     className: 'BGB-player-titles',
 
