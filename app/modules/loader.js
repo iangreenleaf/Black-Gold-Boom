@@ -52,12 +52,10 @@ function(app, Backbone) {
 
     onLayerLoading: function(layer) {
       this.layerCount++;
-      console.log('loading', layer.id, layer);
     },
 
     onLayerReady: function(layer) {
       this.layersReady++;
-      console.log('ready', layer.id, layer);
 
       this.$('.logo-splat').stop().animate({
         'height': (this.layersReady/this.layerCount*100) +'%'
