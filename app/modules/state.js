@@ -21,10 +21,10 @@ function(app, Backbone) {
     },
 
     checkFirstVisit: function() {
-      if (localStorage['visited'] == 'true') {
+      if (localStorage.visited == 'true') {
         this.set('first_visit', false);
       } else {
-        localStorage['visited'] = true;
+        localStorage.visited = true;
       }
     }
   });
