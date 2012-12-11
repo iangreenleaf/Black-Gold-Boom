@@ -18,14 +18,25 @@ function(app, Backbone) {
 
     className: 'BGB-player-titles',
 
+    seqTitle: '',
+
     serialize: function() {
-        return _.extend({title:''},this.model.toJSON());
+        return _.extend({title:''}, {
+          title : this.model.get('title'),
+          seqTitle : this.seqTitle
+        });
     },
 
     initialize: function() {
       /* update the arrow state whenever a frame is rendered */
       this.model.on('frame_rendered', this.render, this);
       this.model.on('data_loaded', this.render, this);
+      this.model.on('sequence_enter', this.getSequenceTitle, this);
+    },
+
+    getSequenceTitle: function(info) {
+      this.seqTitle = info.title;
+      this.render();
     }
 
   });
