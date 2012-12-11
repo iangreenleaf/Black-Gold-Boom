@@ -14,6 +14,18 @@ function(app, Backbone) {
     defaults: {
       'base_rendered': false,
       'first_visit': true
+    },
+
+    initialize: function() {
+      this.checkFirstVisit();
+    },
+
+    checkFirstVisit: function() {
+      if (localStorage['visited'] == 'true') {
+        this.set('first_visit', false);
+      } else {
+        localStorage['visited'] = true;
+      }
     }
   });
 

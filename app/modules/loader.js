@@ -20,6 +20,9 @@ function(app, Backbone) {
     template: 'bgbloader',
 
     initialize: function() {
+      if ( !app.state.get('first_visit') ) {
+        this.DELAY = 0;
+      }
       this.model.on('layer_loading', this.onLayerLoading, this );
       this.model.on('layer_ready', this.onLayerReady, this );
       this.model.on('data_loaded', this.onDataLoaded, this);
