@@ -52,6 +52,7 @@ function(app, Backbone, State, UI) {
       app.player = player;
     },
 
+    /* temporary until full-bleed video support is added to the player */
     updateYoutubeSize : function()
     {
       var width = window.innerHeight * (16 / 9);

@@ -11,7 +11,7 @@ function(app, Backbone) {
 
   Loader.View = Backbone.View.extend({
 
-    DELAY: 0,
+    DELAY: 3000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
@@ -52,15 +52,12 @@ function(app, Backbone) {
 
     onLayerLoading: function(layer) {
       this.layerCount++;
-
-      //var item = '<li><i class="zitem-'+ layer.type.toLowerCase() +' zitem-30" data-id="'+ layer.id +'"></i></li>';
-      //this.$('.ZEEGA-loading-layers').append(item);
+      console.log('loading', layer.id, layer);
     },
 
     onLayerReady: function(layer) {
       this.layersReady++;
-
-      //this.$("[data-id='" + layer.id + "']").addClass('loaded');
+      console.log('ready', layer.id, layer);
 
       this.$('.logo-splat').stop().animate({
         'height': (this.layersReady/this.layerCount*100) +'%'

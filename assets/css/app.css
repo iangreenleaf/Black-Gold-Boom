@@ -2,12 +2,6 @@ html {
   background: black;
   font-family: 'Helvetica', sans-serif;
 }
-#main {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 10;
-}
 #bgbLogo {
   position: absolute;
   z-index: 40;
@@ -630,6 +624,7 @@ a:active {
 .ZEEGA-loader-overlay .loader-content .logo {
   height: 471px;
   margin: 0 auto;
+  overflow: hidden;
   position: relative;
   width: 440px;
 }
