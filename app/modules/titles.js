@@ -22,8 +22,8 @@ function(app, Backbone) {
 
     serialize: function() {
         return _.extend({title:''}, {
-          title : this.model.get('title'),
-          seqTitle : this.seqTitle
+          title : this.seqTitle,
+          seqTitle : this.seqDescription
         });
     },
 
@@ -36,6 +36,7 @@ function(app, Backbone) {
 
     getSequenceTitle: function(info) {
       this.seqTitle = info.title;
+      this.seqDescription = info.description;
       this.render();
     }
 
