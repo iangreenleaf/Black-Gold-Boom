@@ -20,6 +20,14 @@ function(app, Backbone) {
     template: 'bgbloader',
 
     initialize: function() {
+      var _this = this;
+
+      this.bgImages = new Loader.ImagesCollection(69554);
+      this.bgImages.on('reset', this.render, this);
+      this.bgImages.fetch().success(function() {
+        _this.render();
+      });
+
       if ( !app.state.get('first_visit') ) {
         this.DELAY = 0;
       }
@@ -27,30 +35,21 @@ function(app, Backbone) {
       this.model.on('layer_ready', this.onLayerReady, this );
       this.model.on('data_loaded', this.onDataLoaded, this);
       //this.model.on('can_play', this.onCanPlay, this );
+
     },
 
     serialize: function()
     {
-      return this.model.toJSON();
+      var rndImgNumber = ( Math.floor( Math.random() * this.bgImages.length ) ),
+          rndImgUrl = this.bgImages.at(rndImgNumber).get('uri');
+
+      return {
+        rndImgUrl: rndImgUrl
+      };
     },
 
     onDataLoaded: function() {
-
       this.render();
-
-      var coverImage = this.model.get('cover_image');
-      if( !_.isNull( coverImage ) && coverImage != "../../../images/default_cover.png" ) {
-        this.$('.ZEEGA-loader-bg').css({
-          'background': 'url("'+ coverImage +'")',
-          'background-position': '50% 50%',
-          'background-repeat': 'no-repeat no-repeat',
-          'background-attachment': 'fixed',
-          '-webkit-background-size': 'cover',
-          '-moz-background-size': 'cover',
-          '-o-background-size': 'cover',
-          'background-size': 'cover'
-        });
-      }
     },
 
     onLayerLoading: function(layer) {
@@ -90,6 +89,18 @@ function(app, Backbone) {
 
     }
 
+  });
+
+  Loader.ImagesCollection = Backbone.Collection.extend({
+    initialize: function(zeegaId) {
+      this.zeegaId = zeegaId;
+    },
+    url: function() {
+      return 'http://alpha.zeega.org/api/items/' + this.zeegaId;
+    },
+    parse: function(response) {
+      return response.items[0].child_items;
+    }
   });
 
   // Required, return the module for AMD compliance
