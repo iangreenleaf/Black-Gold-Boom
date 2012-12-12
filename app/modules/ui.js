@@ -57,6 +57,10 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
         this.popup = new CollectionPopup.View({"collection_id": 67034 });
         this.insertView( this.popup );
         this.popup.render();
+      } else {
+        if (this.popup) {
+          this.popup.dispose();
+        }
       }
     }
   

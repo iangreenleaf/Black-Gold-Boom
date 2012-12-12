@@ -49,8 +49,8 @@ function(app, Backbone, State, UI ) {
       player.on("frame_rendered window_resized", this.updateYoutubeSize, this);
 
       player.load({
-        //url: 'http://dev.zeega.org/joseph/web/api/projects/3639' // sequence test
-        url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
+        url: 'http://dev.zeega.org/joseph/web/api/projects/3639' // sequence test
+        //url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
       });
       app.player = player;
     },
