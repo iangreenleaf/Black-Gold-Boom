@@ -31,8 +31,15 @@ function(app, Backbone) {
       /* update the arrow state whenever a frame is rendered */
       this.model.on('frame_rendered', this.render, this);
       this.model.on('data_loaded', this.render, this);
+      this.model.on('sequence_enter', this.showTitlebar, this);
       this.model.on('sequence_enter', this.getSequenceTitle, this);
     },
+
+    showTitlebar: _.after(2, function() {
+      this.$el.animate({
+        bottom: 0
+      }, 500);
+    }),
 
     getSequenceTitle: function(info) {
       this.seqTitle = info.title;
