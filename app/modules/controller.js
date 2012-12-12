@@ -10,13 +10,12 @@ define([
 
   "modules/state",
   "modules/ui",
-
    // Plugins
   'zeegaplayer'
 
 ],
 
-function(app, Backbone, State, UI) {
+function(app, Backbone, State, UI ) {
 
   // Create a new module
   var Controller = {};
@@ -44,24 +43,27 @@ function(app, Backbone, State, UI) {
         'window_fit': true,
         'autoplay': false
       });
-      player.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('player: e:',e,obj);});
+
+      player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega player event:',e,obj);});
+
+      player.on("frame_rendered window_resized", this.updateYoutubeSize, this);
+
       player.load({
         url: 'http://dev.zeega.org/joseph/web/api/projects/3639' // sequence test
         //url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
       });
-      player.on('frame_rendered window_resized', this.updateYoutubeSize, this);
       app.player = player;
     },
 
     /* temporary until full-bleed video support is added to the player */
-    updateYoutubeSize : function()
-    {
+    updateYoutubeSize: function() {
       var width = window.innerHeight * (16 / 9);
-      var left = (window.innerWidth - width) / 2;
-      $('.ZEEGA-player .visual-element-video').css({
-        'height': window.innerHeight,
-        'width' : width,
-        'left' : left
+        left = (window.innerWidth - width) / 2;
+
+      $(".ZEEGA-player .visual-element-video").css({
+        "height": window.innerHeight,
+        "width": width,
+        "left": left
       });
     }
 

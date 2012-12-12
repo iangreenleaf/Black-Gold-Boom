@@ -14,11 +14,12 @@ define([
   // Modules,
   'modules/loader',
   'modules/controls',
-  'modules/titles'
+  'modules/titles',
+  "modules/collection-popup"
 
 ],
 
-function(app, Backbone, Loader, Controls, Titles) {
+function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
   // Create a new module
   var UI = {};
@@ -30,6 +31,9 @@ function(app, Backbone, Loader, Controls, Titles) {
     el: '#main',
 
     initialize: function() {
+
+      app.player.on("frame_rendered", this.checkForCollectionFrame, this );
+
 
       this.loader = new Loader.View({model: app.player});
       this.controls = new Controls.View({model: app.player});
@@ -43,6 +47,17 @@ function(app, Backbone, Loader, Controls, Titles) {
 
     afterRender: function() {
       app.state.set('base_rendered', true);
+    },
+
+    checkForCollectionFrame: function( info ) {
+
+      // if the frame is the designated frame, then start the collection popup
+      if ( info.id == 25599 ) {
+        console.log("BINGO");
+        this.popup = new CollectionPopup.View({"collection_id": 67034 });
+        this.insertView( this.popup );
+        this.popup.render();
+      }
     }
   
   });
