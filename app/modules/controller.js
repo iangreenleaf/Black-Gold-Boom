@@ -46,7 +46,7 @@ function(app, Backbone, State, UI) {
       });
       player.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('player: e:',e,obj);});
       player.load({
-        url: 'http://dev.zeega.org/joseph/web/api/projects/3639'
+        url: 'http://alpha.zeega.org/api/projects/3678'
       });
       player.on('frame_rendered window_resized', this.updateYoutubeSize, this);
       app.player = player;
