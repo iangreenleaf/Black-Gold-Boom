@@ -22,7 +22,7 @@ function(app, Backbone) {
     initialize: function() {
       var _this = this;
 
-      this.bgImages = new Loader.ImagesCollection(69554);
+      this.bgImages = new Loader.ImagesCollection(69796);
       this.bgImages.on('reset', this.render, this);
       this.bgImages.fetch().success(function() {
         _this.render();
