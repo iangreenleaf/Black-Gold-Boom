@@ -55,13 +55,16 @@ function(app, Backbone, State, UI) {
     /* temporary until full-bleed video support is added to the player */
     updateYoutubeSize : function()
     {
-      var width = window.innerHeight * (16 / 9);
-      var left = (window.innerWidth - width) / 2;
-      $('.ZEEGA-player .visual-element-video').css({
-        'height': window.innerHeight,
-        'width' : width,
-        'left' : left
-      });
+      _.delay( function() {
+        var width = window.innerHeight * (16 / 9);
+        var left = (window.innerWidth - width) / 2;
+        
+        $('.ZEEGA-player .visual-element-video').css({
+          'height': window.innerHeight,
+          'width' : width,
+          'left' : left
+        });
+      }, 0);
     }
 
   });
