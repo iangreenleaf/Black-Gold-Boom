@@ -16,8 +16,15 @@ function(app, Backbone) {
 
     className: 'ZEEGA-popup',
 
+    events: {
+      'click .continue-arrow' : 'continueSequence'
+    },
+
     serialize: function() {
-      return { id: this.options.collection_id };
+      return {
+        id: this.options.collection_id,
+        name: 'Black Gold Boom'
+      };
     },
 
     afterRender: function() {
@@ -25,19 +32,31 @@ function(app, Backbone) {
     },
 
     initPlayer: function() {
-      var player = new Zeega.player({
+      this.player = new Zeega.player({
         "collection_mode": "slideshow",
         "div_id": "ZEEGA-popup-"+ this.options.collection_id,
         "window_fit": true,
         "autoplay": true
       });
 
-      player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega popup event:',e,obj);});
+      this.player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega popup event:',e,obj);});
 
-      player.load({
+      this.player.load({
         url: 'http://alpha.zeega.org/api/items/'+ this.options.collection_id // sequence test
       });
-      app.player = player;
+      this.player = player;
+    },
+
+    continueSequence: function() {
+      app.player.cueNext();
+    },
+
+    dispose: function() {
+      var _this = this;
+      this.player.destroy();
+      this.player.on('player_destroyed', function() {
+        _this.remove();
+      });
     }
 
   });
