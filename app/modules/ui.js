@@ -36,11 +36,11 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
 
       this.loader = new Loader.View({model: app.player});
-      this.controls = new Controls.View({model: app.player});
+      //this.controls = new Controls.View({model: app.player});
       this.titles = new Titles.View({model: app.player});
 
       this.insertView( this.loader );
-      this.insertView( this.controls );
+      //this.insertView( this.controls );
       this.insertView( this.titles );
       this.render();
     },
@@ -51,17 +51,27 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
     checkForCollectionFrame: function( info ) {
 
+console.log('***** info', info.id)
+
+      if (this.popup) {
+        this.popup.dispose();
+      }
       // if the frame is the designated frame, then start the collection popup
-      if ( info.id == 25599 ) {
-        console.log("BINGO");
+
+      // decompose these
+      if ( info.id == 28729 ) {
+        this.popup = new CollectionPopup.View({"collection_id": 67060 });
+        this.insertView( this.popup );
+        this.popup.render();
+      } else if ( info.id == 28562 ) {
         this.popup = new CollectionPopup.View({"collection_id": 67034 });
         this.insertView( this.popup );
         this.popup.render();
-      } else {
-        if (this.popup) {
-          this.popup.dispose();
-        }
       }
+
+
+
+
     }
   
   });
