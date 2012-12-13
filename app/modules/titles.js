@@ -20,7 +20,7 @@ function(app, Backbone) {
 
     seqTitle: '',
 
-    titlebarHeight: 500, // used for hiding, set in afterRender
+    titlebarHeight: 84, // used for hiding, set in afterRender
 
     titlebarHidden: true,
 
@@ -32,34 +32,56 @@ function(app, Backbone) {
     },
 
     initialize: function() {
-      _.bindAll(this, 'showTitlebar', 'hideTitlebar');
+      var _this = this;
+      _.bindAll(this, 'showTitlebar', 'hideTitlebar', 'showOnHover');
 
       /* update the arrow state whenever a frame is rendered */
       this.model.on('frame_rendered', this.render, this);
       this.model.on('data_loaded', this.render, this);
-      this.model.on('sequence_enter', this.showTitlebar, this);
+      this.model.on('sequence_enter', _.after(2, function() { this.showTitlebar(7000); }), this);
       this.model.on('sequence_enter', this.getSequenceTitle, this);
+
+      $('body').on('mousemove', _.debounce(this.showOnHover, 100) );
     },
 
     afterRender: function() {
       this.titlebarHeight = this.$el.height();
     },
 
-    showTitlebar: _.after(2, function() {
+    showOnHover: function(e){
+      if (!this.hideTimerRunning) {
+
+        if (e.pageY > (window.innerHeight - this.titlebarHeight) && this.titlebarHidden) {
+          this.showTitlebar();
+        } else if (e.pageY < (window.innerHeight - this.titlebarHeight) && !this.titlebarHidden) {
+          this.hideTitlebar();
+        }
+
+      }
+    },
+
+    showTitlebar: function(hideAfter) {
       this.titlebarHidden = false;
-      
+
       if (this.hideTimer) {
         clearTimeout(this.hideTimer);
+        this.hideTimerRunning = false;
       }
 
       this.$el.stop().animate({
         bottom: 0
       }, 500);
-      this.hideTimer = setTimeout(this.hideTitlebar, 7000);
-    }),
+
+      if (hideAfter) {
+        this.hideTimer = setTimeout(this.hideTitlebar, hideAfter);
+        this.hideTimerRunning = true;
+      }
+    },
 
     hideTitlebar: function() {
       this.titlebarHidden = true;
+      this.hideTimerRunning = false;
+
       this.$el.stop().animate({
         bottom: this.titlebarHeight * -1
       }, 500);
