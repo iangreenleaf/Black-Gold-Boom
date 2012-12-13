@@ -23,7 +23,6 @@ function(app, Backbone) {
       var _this = this;
 
       this.bgImages = new Loader.ImagesCollection(69796);
-      this.bgImages.on('reset', this.render, this);
       this.bgImages.fetch().success(function() {
         _this.render();
       });
