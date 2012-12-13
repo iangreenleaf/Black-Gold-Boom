@@ -51,7 +51,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
     checkForCollectionFrame: function( info ) {
 
-console.log('***** info', info.id)
+    console.log('***** info', info.id);
 
       if (this.popup) {
         this.popup.dispose();
