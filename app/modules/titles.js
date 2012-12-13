@@ -63,7 +63,7 @@ function(app, Backbone) {
     showTitlebar: function(hideAfter) {
       this.titlebarHidden = false;
 
-      if (this.hideTimer) {
+      if (this.hideTimerRunning) {
         clearTimeout(this.hideTimer);
         this.hideTimerRunning = false;
       }
@@ -88,10 +88,8 @@ function(app, Backbone) {
     },
 
     getSequenceTitle: function(info) {
-      //this.seqTitle = info.title ? info.title : '';
-      //this.seqDescription = info.description ? info.description : '';
-      this.seqTitle = "This is a very long title which serves to test long titles. Maybe it will go to two lines, who knows. Need to add more text so it is long! " + info.title;
-      this.seqDescription = "This is a very long description which is mostly nonsense so we can test long descriptions. Testing long descriptions! That's what we need to do. Sooooooo long. Okay. Just a little bit longer and we'll be set. " + info.description;
+      this.seqTitle = info.title ? info.title : '';
+      this.seqDescription = info.description ? info.description : '';
       this.render();
     }
 
