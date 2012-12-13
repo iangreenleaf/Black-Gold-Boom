@@ -42,8 +42,8 @@ function(app, Backbone) {
     }),
 
     getSequenceTitle: function(info) {
-      this.seqTitle = info.title;
-      this.seqDescription = info.description;
+      this.seqTitle = info.title ? info.title : '';
+      this.seqDescription = info.description ? info.description : '';
       this.render();
     }
 
