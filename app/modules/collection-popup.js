@@ -44,7 +44,6 @@ function(app, Backbone) {
       this.player.load({
         url: 'http://alpha.zeega.org/api/items/'+ this.options.collection_id // sequence test
       });
-      this.player = player;
     },
 
     continueSequence: function() {
