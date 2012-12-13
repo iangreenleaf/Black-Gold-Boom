@@ -52,7 +52,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
     checkForCollectionFrame: function( info ) {
 
       // if the frame is the designated frame, then start the collection popup
-      if ( info.id == 25599 ) {
+      if ( info.id == 27708 ) {
         console.log("BINGO");
         this.popup = new CollectionPopup.View({"collection_id": 67034 });
         this.insertView( this.popup );
