@@ -26,12 +26,14 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
   var FADE_OUT_DELAY = 3000;
 
-  UI.Layout = Backbone.Layout.extend({
+  UI.Layout = Backbone.LayoutView.extend({
     
     el: '#main',
 
-    initialize: function() {
+    template: 'ui-base',
 
+    initialize: function() {
+      
       app.player.on("frame_rendered", this.checkForCollectionFrame, this );
 
 
