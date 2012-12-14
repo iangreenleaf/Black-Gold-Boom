@@ -27,11 +27,11 @@ require.config({
       exports: "Backbone"
     },
 
-    zeegaplayer: ['jquery'],
-
     // Backbone.LayoutManager depends on Backbone.
     "plugins/backbone.layoutmanager": ["backbone"],
-    "plugins/jquery-ui" : ["jquery"]
+    "plugins/jquery-ui" : ["jquery"],
+    
+    zeegaplayer: ['jquery','plugins/jquery-ui']
   }
 
 });
