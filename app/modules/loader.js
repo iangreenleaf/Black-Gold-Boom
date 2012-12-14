@@ -11,7 +11,7 @@ function(app, Backbone) {
 
   Loader.View = Backbone.View.extend({
 
-    DELAY: 3000,
+    DELAY: 30000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
@@ -27,9 +27,11 @@ function(app, Backbone) {
         _this.render();
       });
 
+      /*
       if ( !app.state.get('first_visit') ) {
         this.DELAY = 0;
       }
+      */
       this.model.on('layer_loading', this.onLayerLoading, this );
       this.model.on('layer_ready', this.onLayerReady, this );
       this.model.on('data_loaded', this.onDataLoaded, this);
