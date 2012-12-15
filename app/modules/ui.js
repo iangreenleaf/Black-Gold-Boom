@@ -55,7 +55,11 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
     console.log('***** info', info.id);
 
-      if (this.popup) {
+      if ( this.popup ) {
+        this.popup.player.on('player_destroyed', function() {
+          this.popup.remove();
+          this.popup = null;
+        }, this);
         this.popup.dispose();
       }
       // if the frame is the designated frame, then start the collection popup

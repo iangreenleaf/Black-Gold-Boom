@@ -53,9 +53,7 @@ function(app, Backbone) {
     dispose: function() {
       var _this = this;
       this.player.destroy();
-      this.player.on('player_destroyed', function() {
-        _this.remove();
-      });
+      
     }
 
   });
