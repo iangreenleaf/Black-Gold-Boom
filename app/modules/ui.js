@@ -38,11 +38,11 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
 
 
       this.loader = new Loader.View({model: app.player});
-      //this.controls = new Controls.View({model: app.player});
+      this.controls = new Controls.View({model: app.player});
       this.titles = new Titles.View({model: app.player});
 
       this.insertView( this.loader );
-      //this.insertView( this.controls );
+      this.insertView( this.controls );
       this.insertView( this.titles );
       this.render();
     },

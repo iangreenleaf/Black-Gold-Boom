@@ -22,44 +22,11 @@ function(app, Backbone) {
     },
 
     events: {
-      'click .next': 'next',
-      'click .prev': 'prev'
+      "click .continue-arrow": "skip"
     },
 
-    next: function() {
-      this.model.cueNext();
-    },
-
-    prev: function() {
-      this.model.cuePrev();
-    },
-
-    updateArrowState: function( info ) {
-      switch(info.connections) {
-        case 'l':
-          this.activateArrow('prev');
-          this.disableArrow('next');
-          break;
-        case 'r':
-          this.disableArrow('prev');
-          this.activateArrow('next');
-          break;
-        case 'lr':
-          this.activateArrow('prev');
-          this.activateArrow('next');
-          break;
-        default:
-          this.disableArrow('prev');
-          this.disableArrow('next');
-      }
-    },
-
-    activateArrow: function(className) {
-      this.$('.'+ className +'.disabled').removeClass('disabled');
-    },
-
-    disableArrow: function(className) {
-      this.$('.'+ className).addClass('disabled');
+    skip: function() {
+      this.model.cueNextSequence();
     }
 
   });
