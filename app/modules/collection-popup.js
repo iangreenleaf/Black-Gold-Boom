@@ -35,6 +35,7 @@ function(app, Backbone) {
       this.player = new Zeega.player({
         "collection_mode": "slideshow",
         "div_id": "ZEEGA-popup-"+ this.options.collection_id,
+        "slides_bleed": false,
         "window_fit": true,
         "autoplay": true
       });
