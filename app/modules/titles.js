@@ -1,10 +1,11 @@
 define([
   "app",
   // Libs
-  "backbone"
+  "backbone",
+  "modules/share"
 ],
 
-function(app, Backbone) {
+function(app, Backbone, Share) {
 
   // Create a new module
   var Titles = {};
@@ -43,6 +44,32 @@ function(app, Backbone) {
       this.model.on('media_timeupdate', this.onTimeupdate, this );
       
       $('body').on('mousemove', _.debounce(this.showOnHover, 100) );
+    },
+
+    events: {
+      "click .share": "share",
+      "click .fullscreen": "fullscreen"
+    },
+
+    share: function() {
+      this.model.pause();
+      if( !this.shareView ) {
+        this.shareView = new Share.View({ model: this.model });
+      }
+      $('body').append(this.shareView.el);
+      this.shareView.render();
+      return false;
+    },
+
+    fullscreen: function() {
+      docElm = document.getElementById('body-main');
+          
+      if (docElm.requestFullscreen) docElm.requestFullscreen();
+      else if (docElm.mozRequestFullScreen) docElm.mozRequestFullScreen();
+      else if (docElm.webkitRequestFullScreen) docElm.webkitRequestFullScreen();
+
+      this.$('#project-fullscreen-toggle i').removeClass('icon-resize-full').addClass('icon-resize-small');
+      return false;
     },
 
     afterRender: function() {
