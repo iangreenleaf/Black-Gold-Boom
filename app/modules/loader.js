@@ -11,7 +11,7 @@ function(app, Backbone) {
 
   Loader.View = Backbone.View.extend({
 
-    DELAY: 30000,
+    DELAY: 3000,
     /* variables keeping track of generic layer states */
     layerCount : 0,
     layersReady : 0,
@@ -21,17 +21,18 @@ function(app, Backbone) {
 
     initialize: function() {
       var _this = this;
-      _.bindAll(this, 'fixSplatBgSize');
+      
+      _.bindAll(this, 'render', 'fixSplatBgSize');
 
       this.bgImages = new Loader.ImagesCollection(69796);
       this.bgImages.fetch().success(function() {
         _this.render();
       });
-      /*
+
       if ( !app.state.get('first_visit') ) {
         this.DELAY = 0;
       }
-      */
+
       this.model.on('layer_loading', this.onLayerLoading, this );
       this.model.on('layer_ready', this.onLayerReady, this );
       this.model.on('data_loaded', this.onDataLoaded, this);
@@ -40,9 +41,8 @@ function(app, Backbone) {
     },
 
     afterRender: function() {
-      var _this = this;
       this.fixSplatBgSize();
-      $(window).on('resize', _this.fixSplatBgSize);
+      $(window).on('resize', this.fixSplatBgSize);
     },
 
     fixSplatBgSize: function() {
