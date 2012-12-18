@@ -40,12 +40,34 @@ function(app, Backbone) {
       this.model.on('data_loaded', this.render, this);
       this.model.on('sequence_enter', _.after(2, function() { this.showTitlebar(7000); }), this);
       this.model.on('sequence_enter', this.getSequenceTitle, this);
-
+      this.model.on('media_timeupdate', this.onTimeupdate, this );
+      
       $('body').on('mousemove', _.debounce(this.showOnHover, 100) );
     },
 
     afterRender: function() {
       this.titlebarHeight = this.$el.height();
+    },
+
+
+    onTimeupdate: function( info ) {
+      var elapsed = info.current_time,
+        duration = info.duration;
+
+
+      this.$('.elapsed-bar').css('width', (elapsed / duration * 100) + "%");
+      this.$('.time-elapsed').text( this._convertTime( elapsed ) );
+      this.$('.time-duration').text( this._convertTime( duration ) );
+
+    },
+
+    _convertTime: function( seconds ) {
+        var m = Math.floor( seconds / 60 );
+        var s = Math.floor( seconds % 60 );
+        if ( s < 10 ) {
+            s = "0" + s;
+        }
+        return m + ":" + s;
     },
 
     showOnHover: function(e){
