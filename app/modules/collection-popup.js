@@ -20,6 +20,13 @@ function(app, Backbone) {
       'click .continue-arrow' : 'continueSequence'
     },
 
+    initialize: function() {
+      this.collectionModel = new CollectionModel({ id: this.options.collection_id });
+      this.collectionModel.fetch().success(function( response ) {
+        this.$('.popup-title').text( this.collectionModel.get("title") );
+      }.bind( this ));
+    },
+
     serialize: function() {
       return {
         id: this.options.collection_id,
@@ -57,6 +64,16 @@ function(app, Backbone) {
       
     }
 
+  });
+
+  var CollectionModel = Backbone.Model.extend({
+    url: function() {
+      return 'http://alpha.zeega.org/api/items/' + this.id;
+    },
+
+    parse: function( response ) {
+      return response.items[0];
+    }
   });
 
   return CollectionPopup;
