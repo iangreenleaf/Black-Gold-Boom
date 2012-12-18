@@ -21,6 +21,8 @@ function(app, Backbone) {
 
     initialize: function() {
       var _this = this;
+      
+      _.bindAll(this, 'render', 'fixSplatBgSize');
 
       this.bgImages = new Loader.ImagesCollection(69796);
       this.bgImages.fetch().success(function() {
@@ -30,11 +32,21 @@ function(app, Backbone) {
       if ( !app.state.get('first_visit') ) {
         this.DELAY = 0;
       }
+
       this.model.on('layer_loading', this.onLayerLoading, this );
       this.model.on('layer_ready', this.onLayerReady, this );
       this.model.on('data_loaded', this.onDataLoaded, this);
       //this.model.on('can_play', this.onCanPlay, this );
 
+    },
+
+    afterRender: function() {
+      this.fixSplatBgSize();
+      $(window).on('resize', this.fixSplatBgSize);
+    },
+
+    fixSplatBgSize: function() {
+      this.$('.logo-splat').css('background-size', 'auto ' + this.$('.logo').height() + 'px');
     },
 
     serialize: function()
