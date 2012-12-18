@@ -98,6 +98,21 @@ function(app, Backbone) {
 
       }, this.DELAY);
 
+    },
+
+    events: {
+      "click .fullscreen": "goFullscreen"
+    },
+
+    goFullscreen: function() {
+      docElm = document.getElementById('body-main');
+          
+      if (docElm.requestFullscreen) docElm.requestFullscreen();
+      else if (docElm.mozRequestFullScreen) docElm.mozRequestFullScreen();
+      else if (docElm.webkitRequestFullScreen) docElm.webkitRequestFullScreen();
+
+      this.$('#project-fullscreen-toggle i').removeClass('icon-resize-full').addClass('icon-resize-small');
+      return false;
     }
 
   });
