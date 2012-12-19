@@ -69,7 +69,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
         this.popup = new CollectionPopup.View({"collection_id": 67060 });
         this.insertView( this.popup );
         this.popup.render();
-      } else if ( info.id == 31018 ) {
+      } else if ( info.id == 29518 ) {
         this.popup = new CollectionPopup.View({"collection_id": 67034 });
         this.insertView( this.popup );
         this.popup.render();
