@@ -15,11 +15,12 @@ define([
   'modules/loader',
   'modules/controls',
   'modules/titles',
-  "modules/collection-popup"
+  "modules/collection-popup",
+  "modules/bgb-end"
 
 ],
 
-function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
+function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
   // Create a new module
   var UI = {};
@@ -33,9 +34,8 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
     template: 'ui-base',
 
     initialize: function() {
-      
       app.player.on("frame_rendered", this.checkForCollectionFrame, this );
-
+      app.player.on("deadend_frame", this.showBGBEnd, this);
 
       this.loader = new Loader.View({model: app.player});
       this.controls = new Controls.View({model: app.player});
@@ -52,8 +52,6 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
     },
 
     checkForCollectionFrame: function( info ) {
-
-    console.log('***** info', info.id);
 
       if ( this.popup ) {
         this.popup.player.on('player_destroyed', function() {
@@ -74,8 +72,12 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
         this.insertView( this.popup );
         this.popup.render();
       }
+    },
 
-
+    showBGBEnd: function() {
+      this.ending = new BGBEnd();
+      this.insertView( this.ending );
+      this.ending.render();
     }
   
   });

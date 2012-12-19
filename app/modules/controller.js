@@ -57,8 +57,7 @@ function(app, Backbone, State, UI ) {
     },
 
     /* temporary until full-bleed video support is added to the player */
-    updateYoutubeSize : function()
-    {
+    updateYoutubeSize : function() {
       _.delay( function() {
         var width = window.innerHeight * (16 / 9);
         var left = (window.innerWidth - width) / 2;
