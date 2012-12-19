@@ -76,8 +76,6 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup ) {
       }
 
 
-
-
     }
   
   });

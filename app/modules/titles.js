@@ -78,9 +78,18 @@ function(app, Backbone, Share) {
 
 
     onTimeupdate: function( info ) {
-      var elapsed = info.current_time,
-        duration = info.duration;
+      var elapsed, duration;
 
+      if ( info.cue_in && info.cue_out ) {
+        duration = info.cue_out - info.cue_in;
+        elapsed = info.current_time - info.cue_in;
+      } else if ( info.cue_out ) {
+        duration = info.cue_out;
+        elapsed = info.current_time;
+      } else {
+        duration = info.duration;
+        elapsed = info.current_time;
+      }
 
       this.$('.elapsed-bar').css('width', (elapsed / duration * 100) + "%");
       this.$('.time-elapsed').text( this._convertTime( elapsed ) );
