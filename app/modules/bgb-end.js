@@ -11,7 +11,9 @@ function(app, Backbone) {
 
   // This will fetch the tutorial template and render it.
   BGBEnd.View = Backbone.View.extend({
-    template: 'bgb-end'
+    template: 'bgb-end',
+
+    className: "BGB-end"
 
   });
 

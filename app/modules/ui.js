@@ -71,13 +71,19 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
         this.popup = new CollectionPopup.View({"collection_id": 67034 });
         this.insertView( this.popup );
         this.popup.render();
+      } else if ( info.id == 30928 ) {
+        this.controls.remove();
+      } else if ( info.id == 31358 ) {
+        this.showBGBEnd();
       }
     },
 
     showBGBEnd: function() {
-      this.ending = new BGBEnd();
-      this.insertView( this.ending );
-      this.ending.render();
+      if ( !this.ending ) {
+        this.ending = new BGBEnd.View();
+        this.insertView( this.ending );
+        this.ending.render();
+      }
     }
   
   });
