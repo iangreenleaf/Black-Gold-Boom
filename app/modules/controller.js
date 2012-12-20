@@ -49,6 +49,7 @@ function(app, Backbone, State, UI ) {
       player.on("frame_rendered window_resized", this.updateYoutubeSize, this);
 
       player.load({
+        preload_ahead: 5,
         //url: 'http://dev.zeega.org/joseph/web/api/projects/3639' // sequence test
         url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
       });
@@ -56,8 +57,7 @@ function(app, Backbone, State, UI ) {
     },
 
     /* temporary until full-bleed video support is added to the player */
-    updateYoutubeSize : function()
-    {
+    updateYoutubeSize : function() {
       _.delay( function() {
         var width = window.innerHeight * (16 / 9);
         var left = (window.innerWidth - width) / 2;

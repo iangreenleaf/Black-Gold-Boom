@@ -30,7 +30,7 @@ function(app, Backbone) {
     serialize: function() {
       return {
         id: this.options.collection_id,
-        name: 'Black Gold Boom'
+        name: ''
       };
     },
 
