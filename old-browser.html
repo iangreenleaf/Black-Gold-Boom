@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<title>Black Gold Boom - Please Upgrade Your Browser</title>
+
+	<link rel="stylesheet" href="assets/css/reset.css">
+
+    <style type="text/css">
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            background: #393637;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .screenshot {
+            left: 0;
+            position: absolute;
+            top: 0;
+            z-index: 1;
+        }
+
+        .info {
+            background: #000;
+            background: rgba(0,0,0,0.9);
+            min-height: 100px;
+            left: 0;
+            margin-top: -70px;
+            overflow: hidden;
+            position: absolute;
+            right: 0;
+            top: 33%;
+            z-index: 2;
+            padding: 20px;
+        }
+
+        .info .text {
+            width: 710zpx;
+            float: left;
+        }
+
+        .info h1 {
+            color: #fff;
+            font-family: 'Futura LT Bold', Futura, Arial, sans-serif;
+            font-size: 44px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info p {
+            color: #fff;
+            font-family: Clarendon, Georgia, Times, 'Times New Roman', serif;
+        }
+
+        .info p strong {
+            color: #FFCD05;
+            line-height: 1.5em;
+        }
+
+        .browser-links {
+            float: right;
+            width: 360;
+            padding: 10px 10px 0 0;
+        }
+
+        .browser-links a {
+            display: inline-block;
+            width: 75px;
+            height: 77px;
+            background: url(assets/img/old-browser/browser-logos.png) no-repeat;
+            margin: 0 5px;
+        }
+        .browser-links a.chrome {
+            background-position: 3px 0;
+        }
+        .browser-links a.firefox {
+            background-position: -83px 0;
+        }
+        .browser-links a.safari {
+            background-position: -175px 0;
+        }
+        .browser-links a.ie {
+            background-position: -251px 0;
+            margin-left: -5px;  
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+    <div class="info">
+        <div class="text">
+            <h1>Please Update Your Browser</h1>
+            <p>
+                Your browser is out of date and your experience is important to us.<br/>
+                <strong>Select an icon to download the latest version.</strong>
+            </p>
+        </div>
+        <div class="browser-links">
+            <a href="http://www.google.com/chrome" class="chrome" target="_blank"></a>
+            <a href="http://www.mozilla.org/firefox" class="firefox" target="_blank"></a>
+            <a href="http://www.apple.com/safari/" class="safari" target="_blank"></a>
+            <a href="http://www.microsoft.com/windows/internet-explorer/" class="ie" target="_blank"></a>
+        </div>
+    </div>
+    <img class="screenshot" src="assets/img/old-browser/screenshot.jpg" alt="">
+
+    <script type="text/javascript" src="assets/js/libs/jquery.js"></script>
+    <script type="text/javascript">
+
+        function centerImage() {
+            var image = $('.screenshot'),
+                theWindow = $(window);
+
+            position();
+            image.on('load', position);
+            $(window).on('resize', position)
+
+            function position() {
+                var imageWidth = image.width(),
+                    imageHeight = image.height(),
+                    windowWidth = theWindow.width(),
+                    windowHeight = theWindow.height(),
+                    imageRatio = imageWidth / imageHeight,
+                    windowRatio = windowWidth / windowHeight;
+
+                if ( imageRatio > windowRatio ) {
+                    image.css({
+                        'left' : ( ( windowWidth - (windowHeight * imageRatio) ) / 2 ),
+                        'top' : 0,
+                        'height' : windowHeight,
+                        'width' : 'auto'
+                    });
+                } else {
+                    image.css({
+                        'left' : '0',
+                        'top' : ( ( windowHeight - (windowWidth / imageRatio) ) / 2 ),
+                        'width' : windowWidth,
+                        'height' : 'auto'
+                    });
+                }
+            }
+        }
+
+        $(function() {
+            centerImage();
+        });
+
+    </script>
+</body>
+</html>
