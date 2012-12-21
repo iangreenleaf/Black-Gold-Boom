@@ -38,6 +38,8 @@ RewriteCond %{HTTP_USER_AGENT} "wapp|wapr|webc|winw|winw|xda|xda-" [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} "up.browser|up.link|windowssce|iemobile|mini|mmp" [NC,OR]
 RewriteCond %{HTTP_USER_AGENT} "symbian|midp|wap|phone|pocket|mobile|pda|psp" [NC]
 RewriteCond %{HTTP_USER_AGENT} !macintosh [NC]
+RewriteCond %{REQUEST_URI} !\.png$ [NC]
+RewriteCond %{REQUEST_URI} !\.jpg$ [NC]
 
 # Check if we're not already on the mobile site
 RewriteCond %{REQUEST_URI} !mobile
@@ -48,7 +50,7 @@ RewriteCond %{REQUEST_URI} !mobile
 #RewriteCond %{HTTP_COOKIE}        !^.*mredir=0.*$ [NC]
 
 # Now redirect to the mobile site
-RewriteRule ^ /mobile.html [R,L,NE]
+RewriteRule ^ mobile.html [R,L,NE]
 
 # Remove the trailing slash from routes
 DirectorySlash Off
