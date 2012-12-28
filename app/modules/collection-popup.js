@@ -39,23 +39,21 @@ function(app, Backbone) {
     },
 
     initPlayer: function() {
+      console.log('init inner slideshow', "ZEEGA-popup-"+ this.options.collection_id, $("ZEEGA-popup-"+ this.options.collection_id))
       this.player = new Zeega.player({
-        div_id: "ZEEGA-popup-"+ this.options.collection_id,
-        window_fit: true,
+        target: "#ZEEGA-popup-"+ this.options.collection_id,
+        //window_fit: true,
         autoplay: true,
         layerOptions: {
           slideshow: {
             display: true,
             bleed: false
           }
-        }
+        },
+        // url: "http://alpha.zeega.org/api/items/72666"
+        url: 'http://alpha.zeega.org/api/items/'+ this.options.collection_id + "/items" // sequence test
       });
-
       this.player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega popup event:',e,obj);});
-
-      this.player.load({
-        url: 'http://alpha.zeega.org/api/items/'+ this.options.collection_id // sequence test
-      });
     },
 
     continueSequence: function() {
