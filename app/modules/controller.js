@@ -40,19 +40,15 @@ function(app, Backbone, State, UI ) {
 
     initPlayer: function() {
       var player = new Zeega.player({
-        'window_fit': true,
-        'autoplay': false
+        window_fit: true,
+        autoplay: false,
+        preloadRadius: 5,
+        url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
       });
 
       player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega player event:',e,obj);});
-
       player.on("frame_rendered window_resized", this.updateYoutubeSize, this);
 
-      player.load({
-        preload_ahead: 5,
-        //url: 'http://dev.zeega.org/joseph/web/api/projects/3639' // sequence test
-        url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
-      });
       app.player = player;
     },
 

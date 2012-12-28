@@ -49,8 +49,7 @@ function(app, Backbone) {
       this.$('.logo-splat').css('background-size', 'auto ' + this.$('.logo').height() + 'px');
     },
 
-    serialize: function()
-    {
+    serialize: function() {
       var rndImgNumber = ( Math.floor( Math.random() * this.bgImages.length ) ),
           rndImgUrl = this.bgImages.at(rndImgNumber).get('uri');
 
@@ -122,10 +121,11 @@ function(app, Backbone) {
       this.zeegaId = zeegaId;
     },
     url: function() {
-      return 'http://alpha.zeega.org/api/items/' + this.zeegaId;
+      return "http://alpha.zeega.org/api/items/" + this.zeegaId + "/items";
     },
     parse: function(response) {
-      return response.items[0].child_items;
+      console.log('image response', response);
+      return response.items;
     }
   });
 

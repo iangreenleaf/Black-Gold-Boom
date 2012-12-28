@@ -40,11 +40,15 @@ function(app, Backbone) {
 
     initPlayer: function() {
       this.player = new Zeega.player({
-        "collection_mode": "slideshow",
-        "div_id": "ZEEGA-popup-"+ this.options.collection_id,
-        "slides_bleed": false,
-        "window_fit": true,
-        "autoplay": true
+        div_id: "ZEEGA-popup-"+ this.options.collection_id,
+        window_fit: true,
+        autoplay: true,
+        layerOptions: {
+          slideshow: {
+            display: true,
+            bleed: false
+          }
+        }
       });
 
       this.player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega popup event:',e,obj);});
