@@ -64,11 +64,11 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
       // decompose these
       if ( info.id == 28729 ) {
-        this.popup = new CollectionPopup.View({"collection_id": 67060 });
+        this.popup = new CollectionPopup.View({"collection_id": 67060 }); // sticker gallery
         this.insertView( this.popup );
         this.popup.render();
-      } else if ( info.id == 29518 ) {
-        this.popup = new CollectionPopup.View({"collection_id": 67034 });
+      } else if ( info.id == 31018 ) {
+        this.popup = new CollectionPopup.View({"collection_id": 67034 }); // housing gallery
         this.insertView( this.popup );
         this.popup.render();
       } else if ( info.id == 30928 ) {
