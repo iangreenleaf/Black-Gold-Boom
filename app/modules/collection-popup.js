@@ -39,7 +39,6 @@ function(app, Backbone) {
     },
 
     initPlayer: function() {
-      console.log('init inner slideshow', "ZEEGA-popup-"+ this.options.collection_id, $("ZEEGA-popup-"+ this.options.collection_id))
       this.player = new Zeega.player({
         target: "#ZEEGA-popup-"+ this.options.collection_id,
         //window_fit: true,

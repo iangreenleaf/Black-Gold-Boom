@@ -124,7 +124,6 @@ function(app, Backbone) {
       return "http://alpha.zeega.org/api/items/" + this.zeegaId + "/items";
     },
     parse: function(response) {
-      console.log('image response', response);
       return response.items;
     }
   });
