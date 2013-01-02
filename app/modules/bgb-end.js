@@ -13,7 +13,16 @@ function(app, Backbone) {
   BGBEnd.View = Backbone.View.extend({
     template: 'bgb-end',
 
-    className: "BGB-end"
+    className: "BGB-end",
+
+    serialize: function() {
+      var rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
+          rndImgUrl = app.bgImages.at(rndImgNumber).get('uri');
+
+      return {
+        rndImgUrl: rndImgUrl
+      };
+    }
 
   });
 
