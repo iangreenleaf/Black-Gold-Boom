@@ -48,7 +48,8 @@ function(app, Backbone, Share) {
 
     events: {
       "click .share": "share",
-      "click .fullscreen": "fullscreen"
+      "click .fullscreen": "fullscreen",
+      "click .play-pause": "playPause"
     },
 
     share: function() {
@@ -149,6 +150,11 @@ function(app, Backbone, Share) {
       this.seqTitle = info.title ? info.title : '';
       this.seqDescription = info.description ? info.description : '';
       this.render();
+    },
+
+    playPause: function() {
+      app.player.playPause();
+      this.$('.play-pause').toggleClass('play');
     }
 
   });

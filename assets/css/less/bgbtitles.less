@@ -8,12 +8,27 @@
 	width: 100%;
 	z-index: 30;
 
+	.play-pause {
+		background: url(../img/play-pause.png) no-repeat 0 0;
+		position: absolute;
+		left: 18px;
+		top: 50%;
+		margin-top: -25px;
+		width: 50px;
+		height: 50px;
+		z-index: 3;
+
+		&.play {
+			background-position: 0 -50px;
+		}
+	}
+
 	h1 {
 		color: #fff;
 		font-family: 'Georgia', serif;
 		font-size: 28px;
 		line-height: 1.1em;
-		margin: 16px 32px 6px;
+		margin: 16px 32px 6px 83px;
 	}
 
 	h2 {
@@ -21,7 +36,7 @@
 		font-size: 18px;
 		font-family: Arial, sans-serif;
 		line-height: 1.2em;
-		margin: 6px 32px 16px;
+		margin: 6px 32px 16px 83px;
 	}
 
 	.title-level {
