@@ -1,32 +1,43 @@
 .BGB-end {
-  color: white;
+  color: #000;
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: #fff;
   z-index: 30;
   height: 100%;
   width: 100%;
 
   .END-inner-wrapper {
+    height: 190px;
     font-weight: bold;
     width: 600px;
-    margin: 50px auto;
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    margin: -95px 0 0 -300px;
+    z-index: 2;
 
     .headline {
       text-align: center;
       font-size: 45px;
+      font-family: Futura, Arial,sans-serif;
     }
     .end-actions {
+      background: rgba(0,0,0,0.75); 
       margin-top: 30px;
+      padding: 9px 0;
+      overflow: hidden;
 
       .visit-link {
         text-align: center;
+        font-family: Futura, Arial,sans-serif;
+        padding-top: 10px;
       }
 
       a {
         float: left;
-        margin-right: 45px;
+        margin-left: 45px;
       }
     }
 
@@ -37,12 +48,25 @@
 
   .END-footer {
     position: absolute;
-    bottom: 0;
+    bottom: 15px;
+    left: 50%;
+    line-height: 1.3em;
     width: 600px;
-    margin: 20px auto;
+    margin: 20px 0 0 -300px;
     font-family: "Georgia";
     text-align: center;
     font-size: 15px;
     font-weight: normal;
+    z-index: 2;
+  }
+
+  .END-bg {
+    height: 100%;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
   }
 }

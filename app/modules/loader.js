@@ -24,8 +24,8 @@ function(app, Backbone) {
       
       _.bindAll(this, 'render', 'fixSplatBgSize');
 
-      this.bgImages = new Loader.ImagesCollection(69796);
-      this.bgImages.fetch().success(function() {
+      app.bgImages = new Loader.ImagesCollection(69796);
+      app.bgImages.fetch().success(function() {
         _this.render();
       });
 
@@ -50,8 +50,8 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var rndImgNumber = ( Math.floor( Math.random() * this.bgImages.length ) ),
-          rndImgUrl = this.bgImages.at(rndImgNumber).get('uri');
+      var rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
+          rndImgUrl = app.bgImages.at(rndImgNumber).get('uri');
 
       return {
         rndImgUrl: rndImgUrl
