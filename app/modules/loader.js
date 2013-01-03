@@ -27,6 +27,7 @@ function(app, Backbone) {
       app.bgImages = new Loader.ImagesCollection(69796);
       app.bgImages.fetch().success(function() {
         _this.render();
+        _this.preloadEndImg();
       });
 
       if ( !app.state.get('first_visit') ) {
@@ -47,6 +48,16 @@ function(app, Backbone) {
 
     fixSplatBgSize: function() {
       this.$('.logo-splat').css('background-size', 'auto ' + this.$('.logo').height() + 'px');
+    },
+
+    preloadEndImg: function() {
+       var rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
+          rndImgUrl = app.bgImages.at(rndImgNumber).get('uri'),
+          preloadImg = $('<img />');
+
+        preloadImg.attr('src',rndImgUrl);
+
+        app.endImageUrl = rndImgUrl;
     },
 
     serialize: function() {

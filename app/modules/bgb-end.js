@@ -16,11 +16,8 @@ function(app, Backbone) {
     className: "BGB-end",
 
     serialize: function() {
-      var rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
-          rndImgUrl = app.bgImages.at(rndImgNumber).get('uri');
-
       return {
-        rndImgUrl: rndImgUrl
+        rndImgUrl: app.endImageUrl
       };
     }
 
