@@ -2,7 +2,7 @@
 require.config({
 
   // Initialize the application with the main application file.
-  deps: ['zeegaplayer', "main"],
+  deps: ['zeegaplayer', "main", "libs/modernizr"],
 
   paths: {
     // JavaScript folders.
@@ -31,7 +31,11 @@ require.config({
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/jquery-ui" : ["jquery"],
     
-    zeegaplayer: ['jquery','plugins/jquery-ui']
+    zeegaplayer: ['jquery','plugins/jquery-ui'],
+
+    modernizr: {
+      exports: "Modernizr"
+    }
   }
 
 });
