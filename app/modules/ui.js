@@ -35,6 +35,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
     initialize: function() {
       app.player.on("frame_rendered", this.checkForCollectionFrame, this );
+      app.player.on("frame_rendered", this.updateContinue, this );
       app.player.on("deadend_frame", this.showBGBEnd, this);
 
       this.loader = new Loader.View({model: app.player});
@@ -51,6 +52,14 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
       app.state.set('base_rendered', true);
     },
 
+    updateContinue: function( info ) {
+      if ( info.attr.advance ) {
+        this.$('.continue-arrow').removeClass('show');
+      } else {
+        this.$('.continue-arrow').addClass('show');
+      }
+    },
+
     checkForCollectionFrame: function( info ) {
 
       if ( this.popup ) {
@@ -64,7 +73,10 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
       // decompose these
       if ( info.id == 28729 ) {
-        this.popup = new CollectionPopup.View({"collection_id": 67060 }); // sticker gallery
+        this.popup = new CollectionPopup.View({
+          collection_id: 67060, // sticker gallery
+          caption: "In the oil patch, there are lots of pickups. And lots of pickup truck stickers. This gallery shows a sampling of those for sale on the sticker bus and those spotted on trucks and cars. Warning: Some are lewd and crude. <span class='emphasis'>Viewer discretion advised.</span>"
+        });
         this.insertView( this.popup );
         this.popup.render();
       } else if ( info.id == 31018 ) {

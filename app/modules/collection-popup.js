@@ -17,7 +17,9 @@ function(app, Backbone) {
     className: 'ZEEGA-popup',
 
     events: {
-      'click .continue-arrow' : 'continueSequence'
+      'click .continue-arrow' : 'continueSequence',
+      "click .continue": "closeCaption",
+      "click .skip": "continueSequence"
     },
 
     initialize: function() {
@@ -30,7 +32,8 @@ function(app, Backbone) {
     serialize: function() {
       return {
         id: this.options.collection_id,
-        name: ''
+        name: '',
+        caption: this.options.caption || ""
       };
     },
 
@@ -59,10 +62,21 @@ function(app, Backbone) {
       app.player.cueNext();
     },
 
+    skipGallery: function() {
+      this.dispose();
+      this.closeCaption();
+    },
+
     dispose: function() {
       var _this = this;
       this.player.destroy();
-      
+    },
+
+    closeCaption: function() {
+      this.$(".caption").fadeOut(function() {
+        $(this).remove();
+      });
+      return false;
     }
 
   });
