@@ -53,7 +53,7 @@ function(app, Backbone) {
           }
         },
         // url: "http://alpha.zeega.org/api/items/72666"
-        url: 'http://alpha.zeega.org/api/items/'+ this.options.collection_id + "/items" // sequence test
+        url: localStorage.api + '/items/'+ this.options.collection_id + "/items" // sequence test
       });
       this.player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega popup event:',e,obj);});
     },
