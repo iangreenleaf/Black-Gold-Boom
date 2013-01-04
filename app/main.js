@@ -7,6 +7,10 @@ require([
 ],
 
 function(app, Router) {
+  // We use canvas support to determine if this is a supported browser
+  if ( !Modernizr.canvas ) {
+    window.location.pathname = 'old-browser.html';
+  }
 
   // Define your master router on the application namespace and trigger all
   // navigation from this instance.
