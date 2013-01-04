@@ -43,6 +43,7 @@ function(app, Backbone, State, UI ) {
         window_fit: true,
         autoplay: false,
         preloadRadius: 5,
+        startFrame: 27708,
         url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
       });
 
