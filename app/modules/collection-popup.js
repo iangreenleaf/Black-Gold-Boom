@@ -40,7 +40,7 @@ function(app, Backbone) {
 
     initPlayer: function() {
       this.player = new Zeega.player({
-        target: "#ZEEGA-popup-"+ this.options.collection_id,
+        target: this.$(".ZEEGA-popup-project-target"),
         //window_fit: true,
         autoplay: true,
         layerOptions: {
