@@ -35,6 +35,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
     initialize: function() {
       app.player.on("frame_rendered", this.checkForCollectionFrame, this );
+      app.player.on("frame_rendered", this.updateContinue, this );
       app.player.on("deadend_frame", this.showBGBEnd, this);
 
       this.loader = new Loader.View({model: app.player});
@@ -49,6 +50,14 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
     afterRender: function() {
       app.state.set('base_rendered', true);
+    },
+
+    updateContinue: function( info ) {
+      if ( info.attr.advance ) {
+        this.$('.continue-arrow').removeClass('show');
+      } else {
+        this.$('.continue-arrow').addClass('show');
+      }
     },
 
     checkForCollectionFrame: function( info ) {
