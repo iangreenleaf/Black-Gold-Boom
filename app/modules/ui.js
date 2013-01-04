@@ -73,7 +73,10 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
 
       // decompose these
       if ( info.id == 28729 ) {
-        this.popup = new CollectionPopup.View({"collection_id": 67060 }); // sticker gallery
+        this.popup = new CollectionPopup.View({
+          collection_id: 67060, // sticker gallery
+          caption: "In the oil patch, there are lots of pickups. And lots of pickup truck stickers. This gallery shows a sampling of those for sale on the sticker bus and those spotted on trucks and cars. Warning: Some are lewd and crude. <span class='emphasis'>Viewer discretion advised.</span>"
+        });
         this.insertView( this.popup );
         this.popup.render();
       } else if ( info.id == 31018 ) {

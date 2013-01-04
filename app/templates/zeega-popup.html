@@ -1,2 +1,11 @@
 <h1 class='popup-title'><%= name %></h1>
 <div id="ZEEGA-popup-<%= id %>" class="ZEEGA-popup-project-target"></div>
+<% if ( caption != "" ) { %>
+  <div class='caption'>
+    <%= caption %>
+    <div class='actions'>
+      <a href="#" class="continue">Ok, let me see</a>
+      <a href="#" class="skip">Skip the gallery</a>
+    </div>
+  </div>
+<% } %>
