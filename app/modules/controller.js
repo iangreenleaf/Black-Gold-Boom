@@ -44,7 +44,7 @@ function(app, Backbone, State, UI ) {
         autoplay: false,
         preloadRadius: 5,
         startFrame: 27708,
-        url: 'http://alpha.zeega.org/api/projects/3678' // bgb test
+        url: localStorage.api + '/projects/3678' // bgb test
       });
 
       player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega player event:',e,obj);});
