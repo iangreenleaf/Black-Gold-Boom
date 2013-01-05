@@ -132,7 +132,7 @@ function(app, Backbone) {
       this.zeegaId = zeegaId;
     },
     url: function() {
-      return "http://alpha.zeega.org/api/items/" + this.zeegaId + "/items";
+      return localStorage.api + "/items/" + this.zeegaId + "/items";
     },
     parse: function(response) {
       return response.items;
