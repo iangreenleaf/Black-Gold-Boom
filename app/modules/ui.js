@@ -34,6 +34,7 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
     template: 'ui-base',
 
     initialize: function() {
+
       app.player.on("frame_rendered", this.checkForCollectionFrame, this );
       app.player.on("frame_rendered", this.updateContinue, this );
       app.player.on("deadend_frame", this.showBGBEnd, this);
