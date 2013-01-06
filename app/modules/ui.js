@@ -105,10 +105,10 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
     },
 
     onMouseOverLogo: function() {
-      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo-hover.png")
+      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo-hover.png");
     },
     onMouseOutLogo: function() {
-      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo.png")
+      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo.png");
     }
   
   });

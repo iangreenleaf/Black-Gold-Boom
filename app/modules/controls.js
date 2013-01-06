@@ -28,7 +28,7 @@ function(app, Backbone) {
       "mouseenter .prev-arrow" : "mouseenterPrev",
       "mouseenter .next-arrow" : "mouseenterNext",
       "mouseout .prev-arrow" : "mouseoutPrev",
-      "mouseout .next-arrow" : "mouseoutNext",
+      "mouseout .next-arrow" : "mouseoutNext"
     },
 
     mouseenterNext: function() {
