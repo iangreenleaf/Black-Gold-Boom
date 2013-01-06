@@ -22,11 +22,16 @@ function(app, Backbone) {
     },
 
     events: {
-      "click .continue-arrow": "skip"
+      "click .continue-arrow": "skip",
+      "click .back-arrow": "skipBack"
     },
 
     skip: function() {
       this.model.cueNextSequence();
+    },
+
+    skipBack: function() {
+      this.model.cuePrevSequence();
     }
 
   });
