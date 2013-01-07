@@ -56,7 +56,15 @@ function(app, Backbone) {
     },
 
     skipBack: function() {
+      // cue the previous sequence THEN update the time
+      // otherwise we don't know which frame to update
       this.model.cuePrevSequence();
+      var currentFrame = this.model.status.attributes.current_frame_model,
+        mediaLayer = currentFrame.layers.models[0],
+        pop = mediaLayer.visualElement.mediaPlayer;
+
+      pop.setCurrentTime( mediaLayer.get('attr').cue_in );
+
     }
 
   });
