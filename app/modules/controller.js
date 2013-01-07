@@ -9,9 +9,7 @@ define([
   "backbone",
 
   "modules/state",
-  "modules/ui",
-   // Plugins
-  'zeegaplayer'
+  "modules/ui"
 
 ],
 

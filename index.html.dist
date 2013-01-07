@@ -11,7 +11,7 @@
 	<base href="/">
 
 	<script>
-		localStorage.api = 'http://alpha.zeega.org/api';
+		localStorage.api = 'zeegaapi';
 		if (!window.console) console = {log: function() {}};
 	</script>
 
@@ -25,6 +25,8 @@
 	<div role="main" id="main"></div>
 
 	<!-- Application source. -->
+	<script src="assets/js/libs/jquery.js"></script>
+	<script src="assets/vendor/zeegaplayer/dist/debug/zeega.js"></script>
 	<script data-main="app/config" src="assets/js/libs/require.js"></script>
 
 </body>
