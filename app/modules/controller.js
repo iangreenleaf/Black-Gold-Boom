@@ -42,12 +42,13 @@ function(app, Backbone, State, UI ) {
       var player = new Zeega.player({
         window_fit: true,
         autoplay: false,
+        keyboard: false,
         preloadRadius: 5,
         startFrame: 27708,
         url: localStorage.api + '/projects/3678' // bgb test
       });
 
-      player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega player event:',e,obj);});
+      // player.on("all", function(e, obj){ if(e!="media_timeupdate") console.log('    zeega player event:',e,obj);});
       player.on("frame_rendered window_resized", this.updateYoutubeSize, this);
 
       app.player = player;
