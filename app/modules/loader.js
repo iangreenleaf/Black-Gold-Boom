@@ -27,7 +27,6 @@ function(app, Backbone) {
       app.bgImages = new Loader.ImagesCollection(69796);
       app.bgImages.fetch().success(function() {
         console.log('fetchedit');
-        _this.bgImagesFetched = true;
         _this.rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) );
         _this.render();
         _this.preloadEndImg();
