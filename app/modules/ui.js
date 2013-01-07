@@ -97,6 +97,18 @@ function(app, Backbone, Loader, Controls, Titles, CollectionPopup, BGBEnd ) {
         this.insertView( this.ending );
         this.ending.render();
       }
+    },
+
+    events: {
+      "mouseenter .bgb-logo": "onMouseOverLogo",
+      "mouseout .bgb-logo": "onMouseOutLogo"
+    },
+
+    onMouseOverLogo: function() {
+      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo-hover.png");
+    },
+    onMouseOutLogo: function() {
+      this.$(".bgb-logo img").attr("src", "assets/img/bgblogo.png");
     }
   
   });

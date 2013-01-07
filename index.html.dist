@@ -20,7 +20,7 @@
 
 </head>
 
-<body>
+<body id="body-main">
 	<!-- Main container. -->
 	<div role="main" id="main"></div>
 

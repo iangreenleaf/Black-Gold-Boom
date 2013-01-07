@@ -1,16 +1,53 @@
-.continue-arrow {
-    background: url(../img/continue-arrow.png) no-repeat right;
-    cursor: pointer;
-    height: 29px;
-    position: absolute;
-    right: 43px;
-    top: 29px;
-    width: 25px;
+.nav-box {
+
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    height: 50px;
+    width: 100px;
     z-index: 40;
 
-    &.show,
-    &:hover {
-        width: 129px;
+    .prev-arrow,
+    .next-arrow {
+        cursor: pointer;
+        height: 29px;
+        width: 30px;
+        background: url(../img/arrow.png) no-repeat;
+        display:block;
+        float:left;
+    }
+    .prev-arrow {
+        display:none;
+        transform: rotate(180deg);
+        -ms-transform: rotate(180deg); /* IE 9 */
+        -webkit-transform: rotate(180deg); /* Safari and Chrome */
+        -o-transform: rotate(180deg); /* Opera */
+        -moz-transform: rotate(180deg); /* Firefox */
+        &:hover {
+            background: url(../img/arrow-hover.png) no-repeat;
+            
+        }
+    }
+    .next-arrow {
+        &:hover {
+            background: url(../img/arrow-hover.png) no-repeat;
+            
+        }
     }
 
+    .arrow-text {
+        position: relative;
+        top: 33px;
+        right: 48px;
+        &.prev {
+            height: 26px;
+            width: 117px;
+            background: url(../img/back.png) no-repeat;
+        }
+        &.next {
+            height: 26px;
+            width: 117px;
+            background: url(../img/continue.png) no-repeat;
+        }
+    }
 }
