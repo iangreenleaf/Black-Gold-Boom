@@ -26,6 +26,8 @@ function(app, Backbone) {
 
       app.bgImages = new Loader.ImagesCollection(69796);
       app.bgImages.fetch().success(function() {
+        _this.bgImagesFetched = true;
+        _this.rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) );
         _this.render();
         _this.preloadEndImg();
       });
@@ -61,12 +63,15 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      var rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
-          rndImgUrl = app.bgImages.at(rndImgNumber).get('uri');
-
-      return {
-        rndImgUrl: rndImgUrl
-      };
+      if (this.bgImagesFetched) {
+        return {
+          rndImgUrl: app.bgImages.at(this.rndImgNumber).get('uri')
+        };
+      } else {
+        return {
+          rndImgUrl: ''
+        };
+      }
     },
 
     onDataLoaded: function() {
