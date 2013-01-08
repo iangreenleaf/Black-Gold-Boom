@@ -22,7 +22,7 @@ function(app, Backbone) {
     initialize: function() {
       var _this = this;
       
-      _.bindAll(this, 'render', 'fixSplatBgSize');
+      _.bindAll(this, 'render');
 
       app.bgImages = new Loader.ImagesCollection(69796);
       app.bgImages.fetch().success(function() {
@@ -42,17 +42,11 @@ function(app, Backbone) {
     },
 
     afterRender: function() {
-      this.fixSplatBgSize();
-      $(window).on('resize', this.fixSplatBgSize);
-      if (this.bgImageReady) {
+      if (this.bgImageReady && this.$('.ZEEGA-loader-bg:animated').length === 0) {
         this.$('.ZEEGA-loader-bg').animate({
           opacity: 0.5
         }, 500);
       }
-    },
-
-    fixSplatBgSize: function() {
-      this.$('.logo-splat').css('background-size', 'auto ' + this.$('.logo').height() + 'px');
     },
 
     preloadStartImg: function() {
