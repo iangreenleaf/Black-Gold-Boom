@@ -26,9 +26,7 @@ function(app, Backbone) {
 
       app.bgImages = new Loader.ImagesCollection(69796);
       app.bgImages.fetch().success(function() {
-        _this.bgImagesFetched = true;
-        _this.rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) );
-        _this.render();
+        _this.preloadStartImg();
         _this.preloadEndImg();
       });
 
@@ -46,10 +44,28 @@ function(app, Backbone) {
     afterRender: function() {
       this.fixSplatBgSize();
       $(window).on('resize', this.fixSplatBgSize);
+      if (this.bgImageReady) {
+        this.$('.ZEEGA-loader-bg').animate({
+          opacity: 0.5
+        }, 500);
+      }
     },
 
     fixSplatBgSize: function() {
       this.$('.logo-splat').css('background-size', 'auto ' + this.$('.logo').height() + 'px');
+    },
+
+    preloadStartImg: function() {
+      var preloadImg = $('<img />'),
+          rndImgNumber = ( Math.floor( Math.random() * app.bgImages.length ) ),
+          _this = this;
+
+      this.rndImgUrl = app.bgImages.at(rndImgNumber).get('uri');
+
+      preloadImg.attr('src',this.rndImgUrl).on('load', function() {
+        _this.bgImageReady = true;
+        _this.render();
+      });
     },
 
     preloadEndImg: function() {
@@ -63,9 +79,9 @@ function(app, Backbone) {
     },
 
     serialize: function() {
-      if (this.bgImagesFetched) {
+      if (this.bgImageReady) {
         return {
-          rndImgUrl: app.bgImages.at(this.rndImgNumber).get('uri')
+          rndImgUrl: this.rndImgUrl
         };
       } else {
         return {
