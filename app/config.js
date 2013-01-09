@@ -2,7 +2,7 @@
 require.config({
 
   // Initialize the application with the main application file.
-  deps: [ "backbone", "zeegaplayer", "main"],
+  deps: ["zeegaplayer", "main"],
 
   paths: {
     // JavaScript folders.
