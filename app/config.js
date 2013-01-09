@@ -2,7 +2,7 @@
 require.config({
 
   // Initialize the application with the main application file.
-  deps: ["zeegaplayer", "main"],
+  deps: [ "zeegaplayer", "main"],
 
   paths: {
     // JavaScript folders.
@@ -24,7 +24,6 @@ require.config({
 
   shim: {
 
-    //"plugins/jquery-ui" : ["jquery"],
     //"libs/imagesloaded.jquery.min" : ["jquery"],
 
     // Backbone library depends on lodash and jQuery.
