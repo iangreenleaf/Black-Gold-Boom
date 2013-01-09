@@ -2,7 +2,8 @@ define([
 	// Application.
 	"app",
 	// Modules.
-	"modules/controller"
+	"modules/controller",
+	"zeegaplayer"
 ],
 
 function(app, Controller) {

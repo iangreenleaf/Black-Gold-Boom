@@ -40,7 +40,7 @@ function(app, Backbone, State, UI ) {
       var player = new Zeega.player({
         window_fit: true,
         autoplay: false,
-        keyboard: false,
+        keyboard: true,
         preloadRadius: 5,
         startFrame: 27708,
         url: localStorage.api + '/items/69795' // bgb test
