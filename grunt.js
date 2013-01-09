@@ -189,18 +189,10 @@ module.exports = function(grunt) {
     copy: {
       dist: {
         files: {
-          "dist/release/": [
-            "assets/img/**",
-            "assets/js/libs/jquery.js",
-            "assets/js/libs/imagesloaded.jquery.min.js"
-          ],
-          //"dist/release/fonts/": "assets/css/fonts/**",
+          "dist/release/": "assets/img/**",
+          "dist/release/fonts/": "assets/css/fonts/**",
           "assets/img/layers/": "assets/vendor/zeegaplayer/dist/release/img/layers/*",
-          "assets/img/zeegaplayer/": "assets/vendor/zeegaplayer/dist/release/img/*",
-          "dist/debug/": [
-            "assets/js/libs/jquery.js",
-            "assets/js/libs/imagesloaded.jquery.min.js"
-            ]
+          "assets/img/zeegaplayer/": "assets/vendor/zeegaplayer/dist/release/img/*"
         },
         options: { "basePath" : "/", "flatten" : true }
       }
@@ -213,7 +205,7 @@ module.exports = function(grunt) {
   // dist/debug/templates.js, compile all the application code into
   // dist/debug/require.js, and then concatenate the require/define shim
   // almond.js and dist/debug/templates.js into the require.js file.
-  grunt.registerTask("debug", "clean lint  jst requirejs concat styles less copy");
+  grunt.registerTask("debug", "clean lint  jst requirejs concat styles less");
 
   // The release task will run the debug tasks and then minify the
   // dist/debug/require.js file and CSS files.

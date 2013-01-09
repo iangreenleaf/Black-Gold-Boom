@@ -2,7 +2,7 @@
 require.config({
 
   // Initialize the application with the main application file.
-  deps : ["main"],
+  deps: ['zeegaplayer', "main"],
 
   paths: {
     // JavaScript folders.
@@ -14,37 +14,26 @@ require.config({
     jquery: "../assets/js/libs/jquery",
     lodash: "../assets/js/libs/lodash",
     backbone: "../assets/js/libs/backbone",
-    modernizr: "../assets/js/libs/modernizr"
-    /* we don't know why this doesn't work */
-    /*
+
     zeega: "../assets/js/zeega",
 
-    zeegaplayer: "../assets/vendor/zeegaplayer/dist/debug/zeega"
-    */
+    zeegaplayer: "../assets/vendor/zeegaplayer/dist/debug/zeega",
+
+    modernizr: "../assets/js/libs/modernizr"
   },
 
   shim: {
-
-    jquery: {
-      exports: '$'
-    },
-
     // Backbone library depends on lodash and jQuery.
     backbone: {
-      deps: ["jquery", "lodash"],
+      deps: ["jquery", "lodash",'zeegaplayer'],
       exports: "Backbone"
     },
 
     // Backbone.LayoutManager depends on Backbone.
     "plugins/backbone.layoutmanager": ["backbone"],
     "plugins/jquery-ui" : ["jquery"],
-
-    /*
-    zeegaplayer: {
-      deps: ['backbone', 'jquery', 'plugins/jquery-ui'],
-      exports: 'Zeega'
-    },
-    */
+    
+    zeegaplayer: ['jquery','plugins/jquery-ui'],
 
     modernizr: {
       exports: "Modernizr"
