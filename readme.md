@@ -1,17 +1,55 @@
-![Zeega](https://raw.github.com/Zeega/Zeega-Core/master/web/images/zeega-logo-large.png)
-# ZEEGA Standalone Player
+# Black Gold Boom :: Rough Ride
 
-Zeega is an open-source HTML5 platform for creating interactive documentaries and inventing new forms of storytelling. To read more about Zeega go to [zeega.org](http://zeega.org).
+### Install at the web root or sub-domain, not in a sub-directory.
 
-## Documentation ##
+## Production Install
 
-View the Backbone Boilerplate documentation here:
+Tested on Linux version 2.6.18-028stab101.1 with Apache/2.2.22. Be sure mod_rewrite module is installed. htaccess file may need to be modified if app is not run from root directory.
 
-[GitHub Wiki](https://github.com/tbranyen/backbone-boilerplate/wiki)
+### Using ssh and git
 
-## Build process ##
+Clone repository into web directory and checkout stable branch.
 
-To use the new and improved build process, please visit the 
-[grunt-bbb](https://github.com/backbone-boilerplate/grunt-bbb)
-plugin repo and follow the instructions to install.  Basing your project off
-this repo will allow the `bbb` commands to work out-of-the-box.
+```bash
+cd /path/to/web
+git clone https://github.com/MAP-Productions/Black-Gold-Boom.git .
+git checkout stable
+```
+
+Copy htaccess and index dist files.
+
+```bash
+cp .htaccess.dist .htaccess
+cp index.html.dist index.html
+
+
+## Setup
+
+
+```bash
+npm install
+```
+
+```bash
+git submodule update --init --recursive
+```
+
+## Build Commands
+
+```bash
+bbb watch
+```
+
+```bash
+bbb debug
+```
+
+```bash
+bbb release
+```
+
+## Notes
+
+Vendor deps:
+
+- Bootstrap http://twitter.github.com/bootstrap
