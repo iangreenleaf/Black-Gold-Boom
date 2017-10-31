@@ -410,6 +410,830 @@ __p+='<h1 class=\'popup-title\'>'+
 ;__p+='';
 }
 return __p;
+};;/**
+ * almond 0.1.3 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/jrburke/almond for details
+ */
+//Going sloppy to avoid 'use strict' string cost, but strict practices should
+//be followed.
+/*jslint sloppy: true */
+/*global setTimeout: false */
+
+var requirejs, require, define;
+(function (undef) {
+    var main, req,
+        defined = {},
+        waiting = {},
+        config = {},
+        defining = {},
+        aps = [].slice;
+
+    /**
+     * Given a relative module name, like ./something, normalize it to
+     * a real name that can be mapped to a path.
+     * @param {String} name the relative name
+     * @param {String} baseName a real name that the name arg is relative
+     * to.
+     * @returns {String} normalized name
+     */
+    function normalize(name, baseName) {
+        var nameParts, nameSegment, mapValue, foundMap,
+            foundI, foundStarMap, starI, i, j, part,
+            baseParts = baseName && baseName.split("/"),
+            map = config.map,
+            starMap = (map && map['*']) || {};
+
+        //Adjust any relative paths.
+        if (name && name.charAt(0) === ".") {
+            //If have a base name, try to normalize against it,
+            //otherwise, assume it is a top-level require that will
+            //be relative to baseUrl in the end.
+            if (baseName) {
+                //Convert baseName to array, and lop off the last part,
+                //so that . matches that "directory" and not name of the baseName's
+                //module. For instance, baseName of "one/two/three", maps to
+                //"one/two/three.js", but we want the directory, "one/two" for
+                //this normalization.
+                baseParts = baseParts.slice(0, baseParts.length - 1);
+
+                name = baseParts.concat(name.split("/"));
+
+                //start trimDots
+                for (i = 0; i < name.length; i += 1) {
+                    part = name[i];
+                    if (part === ".") {
+                        name.splice(i, 1);
+                        i -= 1;
+                    } else if (part === "..") {
+                        if (i === 1 && (name[2] === '..' || name[0] === '..')) {
+                            //End of the line. Keep at least one non-dot
+                            //path segment at the front so it can be mapped
+                            //correctly to disk. Otherwise, there is likely
+                            //no path mapping for a path starting with '..'.
+                            //This can still fail, but catches the most reasonable
+                            //uses of ..
+                            return true;
+                        } else if (i > 0) {
+                            name.splice(i - 1, 2);
+                            i -= 2;
+                        }
+                    }
+                }
+                //end trimDots
+
+                name = name.join("/");
+            }
+        }
+
+        //Apply map config if available.
+        if ((baseParts || starMap) && map) {
+            nameParts = name.split('/');
+
+            for (i = nameParts.length; i > 0; i -= 1) {
+                nameSegment = nameParts.slice(0, i).join("/");
+
+                if (baseParts) {
+                    //Find the longest baseName segment match in the config.
+                    //So, do joins on the biggest to smallest lengths of baseParts.
+                    for (j = baseParts.length; j > 0; j -= 1) {
+                        mapValue = map[baseParts.slice(0, j).join('/')];
+
+                        //baseName segment has  config, find if it has one for
+                        //this name.
+                        if (mapValue) {
+                            mapValue = mapValue[nameSegment];
+                            if (mapValue) {
+                                //Match, update name to the new value.
+                                foundMap = mapValue;
+                                foundI = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (foundMap) {
+                    break;
+                }
+
+                //Check for a star map match, but just hold on to it,
+                //if there is a shorter segment match later in a matching
+                //config, then favor over this star map.
+                if (!foundStarMap && starMap && starMap[nameSegment]) {
+                    foundStarMap = starMap[nameSegment];
+                    starI = i;
+                }
+            }
+
+            if (!foundMap && foundStarMap) {
+                foundMap = foundStarMap;
+                foundI = starI;
+            }
+
+            if (foundMap) {
+                nameParts.splice(0, foundI, foundMap);
+                name = nameParts.join('/');
+            }
+        }
+
+        return name;
+    }
+
+    function makeRequire(relName, forceSync) {
+        return function () {
+            //A version of a require function that passes a moduleName
+            //value for items that may need to
+            //look up paths relative to the moduleName
+            return req.apply(undef, aps.call(arguments, 0).concat([relName, forceSync]));
+        };
+    }
+
+    function makeNormalize(relName) {
+        return function (name) {
+            return normalize(name, relName);
+        };
+    }
+
+    function makeLoad(depName) {
+        return function (value) {
+            defined[depName] = value;
+        };
+    }
+
+    function callDep(name) {
+        if (waiting.hasOwnProperty(name)) {
+            var args = waiting[name];
+            delete waiting[name];
+            defining[name] = true;
+            main.apply(undef, args);
+        }
+
+        if (!defined.hasOwnProperty(name)) {
+            throw new Error('No ' + name);
+        }
+        return defined[name];
+    }
+
+    /**
+     * Makes a name map, normalizing the name, and using a plugin
+     * for normalization if necessary. Grabs a ref to plugin
+     * too, as an optimization.
+     */
+    function makeMap(name, relName) {
+        var prefix, plugin,
+            index = name.indexOf('!');
+
+        if (index !== -1) {
+            prefix = normalize(name.slice(0, index), relName);
+            name = name.slice(index + 1);
+            plugin = callDep(prefix);
+
+            //Normalize according
+            if (plugin && plugin.normalize) {
+                name = plugin.normalize(name, makeNormalize(relName));
+            } else {
+                name = normalize(name, relName);
+            }
+        } else {
+            name = normalize(name, relName);
+        }
+
+        //Using ridiculous property names for space reasons
+        return {
+            f: prefix ? prefix + '!' + name : name, //fullName
+            n: name,
+            p: plugin
+        };
+    }
+
+    function makeConfig(name) {
+        return function () {
+            return (config && config.config && config.config[name]) || {};
+        };
+    }
+
+    main = function (name, deps, callback, relName) {
+        var cjsModule, depName, ret, map, i,
+            args = [],
+            usingExports;
+
+        //Use name if no relName
+        relName = relName || name;
+
+        //Call the callback to define the module, if necessary.
+        if (typeof callback === 'function') {
+
+            //Pull out the defined dependencies and pass the ordered
+            //values to the callback.
+            //Default to [require, exports, module] if no deps
+            deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
+            for (i = 0; i < deps.length; i += 1) {
+                map = makeMap(deps[i], relName);
+                depName = map.f;
+
+                //Fast path CommonJS standard dependencies.
+                if (depName === "require") {
+                    args[i] = makeRequire(name);
+                } else if (depName === "exports") {
+                    //CommonJS module spec 1.1
+                    args[i] = defined[name] = {};
+                    usingExports = true;
+                } else if (depName === "module") {
+                    //CommonJS module spec 1.1
+                    cjsModule = args[i] = {
+                        id: name,
+                        uri: '',
+                        exports: defined[name],
+                        config: makeConfig(name)
+                    };
+                } else if (defined.hasOwnProperty(depName) || waiting.hasOwnProperty(depName)) {
+                    args[i] = callDep(depName);
+                } else if (map.p) {
+                    map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
+                    args[i] = defined[depName];
+                } else if (!defining[depName]) {
+                    throw new Error(name + ' missing ' + depName);
+                }
+            }
+
+            ret = callback.apply(defined[name], args);
+
+            if (name) {
+                //If setting exports via "module" is in play,
+                //favor that over return value and exports. After that,
+                //favor a non-undefined return value over exports use.
+                if (cjsModule && cjsModule.exports !== undef &&
+                        cjsModule.exports !== defined[name]) {
+                    defined[name] = cjsModule.exports;
+                } else if (ret !== undef || !usingExports) {
+                    //Use the return value from the function.
+                    defined[name] = ret;
+                }
+            }
+        } else if (name) {
+            //May just be an object definition for the module. Only
+            //worry about defining if have a module name.
+            defined[name] = callback;
+        }
+    };
+
+    requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
+        if (typeof deps === "string") {
+            //Just return the module wanted. In this scenario, the
+            //deps arg is the module name, and second arg (if passed)
+            //is just the relName.
+            //Normalize module name, if it contains . or ..
+            return callDep(makeMap(deps, callback).f);
+        } else if (!deps.splice) {
+            //deps is a config object, not an array.
+            config = deps;
+            if (callback.splice) {
+                //callback is an array, which means it is a dependency list.
+                //Adjust args if there are dependencies
+                deps = callback;
+                callback = relName;
+                relName = null;
+            } else {
+                deps = undef;
+            }
+        }
+
+        //Support require(['a'])
+        callback = callback || function () {};
+
+        //If relName is a function, it is an errback handler,
+        //so remove it.
+        if (typeof relName === 'function') {
+            relName = forceSync;
+            forceSync = alt;
+        }
+
+        //Simulate async callback;
+        if (forceSync) {
+            main(undef, deps, callback, relName);
+        } else {
+            setTimeout(function () {
+                main(undef, deps, callback, relName);
+            }, 15);
+        }
+
+        return req;
+    };
+
+    /**
+     * Just drops the config on the floor, but returns req in case
+     * the config return value is used.
+     */
+    req.config = function (cfg) {
+        config = cfg;
+        return req;
+    };
+
+    define = function (name, deps, callback) {
+
+        //This module may not have dependencies
+        if (!deps.splice) {
+            //deps is not an array, so probably means
+            //an object literal or factory function for
+            //the value. Adjust args.
+            callback = deps;
+            deps = [];
+        }
+
+        waiting[name] = [name, deps, callback];
+    };
+
+    define.amd = {
+        jQuery: true
+    };
+}());
+;this["JST"] = this["JST"] || {};
+
+this["JST"]["app/templates/bgb-end.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'END-inner-wrapper\'>\n  <div class=\'headline\'>\n    THANKS FOR WATCHING<br/>ROUGH RIDE\n  </div>\n\n  <div class=\'end-actions\'>\n    <a href=\'http://blackgoldboom.com\' target=\'blank\' class=\'visit-link\'>VISIT THE FULL SITE FOR<br/>MORE STORIES</a>\n    <a class=\'share-icons\' target=\'blank\' href=\'http://twitter.com/share?text=Check%20out%20Black%20Gold%20Boom&url=http://www.blackgoldboom.org/\'><img src=\'assets/img/twitter-large.png\'/></a>\n        \n    <a class=\'share-icons\' target=\'blank\' href=\'http://www.facebook.com/sharer.php?u=http://www.blackgoldboom.com/\'><img src=\'assets/img/facebook-large.png\'/></a>\n    <a class=\'share-icons\' target=\'blank\' href=\'mailto:your-friend@example.com?subject=Black%20Gold%20Boom!&body=http://www.blackgoldboom.com/\'><img src=\'assets/img/email-large.png\'/></a>\n  </div>\n</div>\n<div class=\'END-footer\'>\n  Brought to you by Prairie Public, Zeega, and Localore, a national initiative produced by AIR, with financial support from the Corporation for Public Broadcasting, the Wyncote Foundation, the John D. and Catherine T. MacArthur Foundation, and the National Endowment for the Arts.\n</div>\n<div class="END-bg" style="background: url('+
+( rndImgUrl )+
+'); background-position: 50% 50%; background-repeat: no-repeat no-repeat; background-attachment: fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div>\n';
+}
+return __p;
+};
+
+this["JST"]["app/templates/bgbloader.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="loader-content">\n\t<div class="logo">\n\t\t<div class="logo-splat"></div>\n        <div class="logo-splat-under"></div>\n\t</div>\n\t<div class="intro-text">\n\t\t<p>Rumble. Screech. Bam.</p>\n\t\t<p>For the next 20 minutes or so, you\'ll see and hear stories from North Dakota oil country.</p>\n\t\t<p>This interactive documentary has 9 chapters, each with its own video. Plus there are songs, data and tips from people working there.</p>\n\t\t<p>Let\'s go.</p>\n\t\t<div class=\'fullscreen-loader\'>\n\t\t\tGET THE BEST EXPERIENCE IN\n\t\t\t<a href=\'#\' class=\'fullscreen\'> <img src="assets/img/fullscreen-icon.png" width="12" height="12"> FULL SCREEN</strong>\n\t\t</div>\n\t</div>\n</div>\n<div class="loader-logo-shelf">\n\t<a href="http://www.prairiepublic.org/" target="_blank"><img src="assets/img/logos/logo-prarie-public.png"  width="86" height="66" alt="Prarie Public"></a>\n\t<a href="http://2belowzero.org/" target="_blank"><img src="assets/img/logos/logo-2-below-zero.png" width="71" height="62" alt="2 below zero"></a>\n\t<a href="http://www.airmediaworks.org/" target="_blank"><img src="assets/img/logos/logo-air.png" width="61" height="39" alt="AIR"></a>\n\t<a href="http://airmediaworks.org/localore" target="_blank"><img src="assets/img/logos/logo-localore.png" width="153" height="34" alt="Localore"></a>\n\t<a href="http://zeega.org/" target="_blank"><img src="assets/img/logos/logo-zeega.png" width="101" height="31" alt="Zeega"></a>\n</div>\n<div class="ZEEGA-loader-bg" style="background: url('+
+( rndImgUrl )+
+'); background-position: 50% 50%; background-repeat: no-repeat no-repeat; background-attachment: fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/controls.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="nav-box">\n    <a class=\'prev-arrow\'></a>\n    <a class=\'next-arrow\'></a>\n    <div class=\'arrow-text\'></div>\n</div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/share.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='  <div class=\'overlay-wrapper\'>\n    <div class=\'BGB-overlay-title\'><h2>SHARE BLACK GOLD BOOM\'S ROUGH RIDE</h2></div>\n    <a href=\'#\' class=\'close-modal\'><h3>close</h3></a>\n\n\n    <div class=\'BGB-overlay-content-wrapper-plain clearfix\'>\n\n      <a class=\'share-icons\' target=\'blank\' href=\'http://twitter.com/share?text=Check%20out%20Black%20Gold%20Boom&url=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/twitter-large.png\'/></a>\n        \n      <a class=\'share-icons\' target=\'blank\' href=\'http://www.facebook.com/sharer.php?u=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/facebook-large.png\'/></a>\n      <a class=\'share-icons\' target=\'blank\' href=\'mailto:your-friend@example.com?subject=Black%20Gold%20Boom!&body=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/email-large.png\'/></a>\n      <br/>\n\n    </div>\n  </div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/titles.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' class=\'play-pause\'></a>\n<div class=\'title-bar-above\'>\n  <div class=\'title-level\'>\n    <h1>'+
+( title )+
+'</h1>\n    <div class=\'elapsed\'>\n      <span class=\'time-elapsed\'>1:23</span> / <span class=\'time-duration\'>4:56</span>\n    </div>\n  </div>\n  <h2>'+
+( seqTitle )+
+'</h2>\n  <div class=\'aux-controls\'>\n    <div class=\'\'><a href=\'#\' class=\'share\'>SHARE</a></div>\n    <div class=\'\'><a href=\'#\' class=\'fullscreen\'>FULLSCREEN</a></div>\n  </div>\n</div>\n<div class=\'elapsed-bar-wrapper\'>\n  <div class=\'elapsed-bar\'></div>\n</div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/ui-base.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="http://blackgoldboom.com/" target="_blank" class="bgb-logo" title="View more stories on blackgoldboom.com">\n    <img src="assets/img/bgblogo.png" width="85" height="92" alt="Black Gold Boom">\n</a>\n<div class="block-clickthrough"></div>\n<span class="bottom-credit">powered by <a href="http://zeega.org" target="_blank">zeega</a></span>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/zeega-popup.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<h1 class=\'popup-title\'>'+
+( name )+
+'</h1>\n<div id="ZEEGA-popup-'+
+( id )+
+'" class="ZEEGA-popup-project-target"></div>\n';
+ if ( caption != "" ) { 
+;__p+='\n  <div class=\'caption\'>\n    '+
+( caption )+
+'\n    <div class=\'actions\'>\n      <a href="#" class="continue">Ok, let me see</a>\n      <a href="#" class="skip">Skip the gallery</a>\n    </div>\n  </div>\n';
+ } 
+;__p+='';
+}
+return __p;
+};;/**
+ * almond 0.1.3 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
+ * Available via the MIT or new BSD license.
+ * see: http://github.com/jrburke/almond for details
+ */
+//Going sloppy to avoid 'use strict' string cost, but strict practices should
+//be followed.
+/*jslint sloppy: true */
+/*global setTimeout: false */
+
+var requirejs, require, define;
+(function (undef) {
+    var main, req,
+        defined = {},
+        waiting = {},
+        config = {},
+        defining = {},
+        aps = [].slice;
+
+    /**
+     * Given a relative module name, like ./something, normalize it to
+     * a real name that can be mapped to a path.
+     * @param {String} name the relative name
+     * @param {String} baseName a real name that the name arg is relative
+     * to.
+     * @returns {String} normalized name
+     */
+    function normalize(name, baseName) {
+        var nameParts, nameSegment, mapValue, foundMap,
+            foundI, foundStarMap, starI, i, j, part,
+            baseParts = baseName && baseName.split("/"),
+            map = config.map,
+            starMap = (map && map['*']) || {};
+
+        //Adjust any relative paths.
+        if (name && name.charAt(0) === ".") {
+            //If have a base name, try to normalize against it,
+            //otherwise, assume it is a top-level require that will
+            //be relative to baseUrl in the end.
+            if (baseName) {
+                //Convert baseName to array, and lop off the last part,
+                //so that . matches that "directory" and not name of the baseName's
+                //module. For instance, baseName of "one/two/three", maps to
+                //"one/two/three.js", but we want the directory, "one/two" for
+                //this normalization.
+                baseParts = baseParts.slice(0, baseParts.length - 1);
+
+                name = baseParts.concat(name.split("/"));
+
+                //start trimDots
+                for (i = 0; i < name.length; i += 1) {
+                    part = name[i];
+                    if (part === ".") {
+                        name.splice(i, 1);
+                        i -= 1;
+                    } else if (part === "..") {
+                        if (i === 1 && (name[2] === '..' || name[0] === '..')) {
+                            //End of the line. Keep at least one non-dot
+                            //path segment at the front so it can be mapped
+                            //correctly to disk. Otherwise, there is likely
+                            //no path mapping for a path starting with '..'.
+                            //This can still fail, but catches the most reasonable
+                            //uses of ..
+                            return true;
+                        } else if (i > 0) {
+                            name.splice(i - 1, 2);
+                            i -= 2;
+                        }
+                    }
+                }
+                //end trimDots
+
+                name = name.join("/");
+            }
+        }
+
+        //Apply map config if available.
+        if ((baseParts || starMap) && map) {
+            nameParts = name.split('/');
+
+            for (i = nameParts.length; i > 0; i -= 1) {
+                nameSegment = nameParts.slice(0, i).join("/");
+
+                if (baseParts) {
+                    //Find the longest baseName segment match in the config.
+                    //So, do joins on the biggest to smallest lengths of baseParts.
+                    for (j = baseParts.length; j > 0; j -= 1) {
+                        mapValue = map[baseParts.slice(0, j).join('/')];
+
+                        //baseName segment has  config, find if it has one for
+                        //this name.
+                        if (mapValue) {
+                            mapValue = mapValue[nameSegment];
+                            if (mapValue) {
+                                //Match, update name to the new value.
+                                foundMap = mapValue;
+                                foundI = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (foundMap) {
+                    break;
+                }
+
+                //Check for a star map match, but just hold on to it,
+                //if there is a shorter segment match later in a matching
+                //config, then favor over this star map.
+                if (!foundStarMap && starMap && starMap[nameSegment]) {
+                    foundStarMap = starMap[nameSegment];
+                    starI = i;
+                }
+            }
+
+            if (!foundMap && foundStarMap) {
+                foundMap = foundStarMap;
+                foundI = starI;
+            }
+
+            if (foundMap) {
+                nameParts.splice(0, foundI, foundMap);
+                name = nameParts.join('/');
+            }
+        }
+
+        return name;
+    }
+
+    function makeRequire(relName, forceSync) {
+        return function () {
+            //A version of a require function that passes a moduleName
+            //value for items that may need to
+            //look up paths relative to the moduleName
+            return req.apply(undef, aps.call(arguments, 0).concat([relName, forceSync]));
+        };
+    }
+
+    function makeNormalize(relName) {
+        return function (name) {
+            return normalize(name, relName);
+        };
+    }
+
+    function makeLoad(depName) {
+        return function (value) {
+            defined[depName] = value;
+        };
+    }
+
+    function callDep(name) {
+        if (waiting.hasOwnProperty(name)) {
+            var args = waiting[name];
+            delete waiting[name];
+            defining[name] = true;
+            main.apply(undef, args);
+        }
+
+        if (!defined.hasOwnProperty(name)) {
+            throw new Error('No ' + name);
+        }
+        return defined[name];
+    }
+
+    /**
+     * Makes a name map, normalizing the name, and using a plugin
+     * for normalization if necessary. Grabs a ref to plugin
+     * too, as an optimization.
+     */
+    function makeMap(name, relName) {
+        var prefix, plugin,
+            index = name.indexOf('!');
+
+        if (index !== -1) {
+            prefix = normalize(name.slice(0, index), relName);
+            name = name.slice(index + 1);
+            plugin = callDep(prefix);
+
+            //Normalize according
+            if (plugin && plugin.normalize) {
+                name = plugin.normalize(name, makeNormalize(relName));
+            } else {
+                name = normalize(name, relName);
+            }
+        } else {
+            name = normalize(name, relName);
+        }
+
+        //Using ridiculous property names for space reasons
+        return {
+            f: prefix ? prefix + '!' + name : name, //fullName
+            n: name,
+            p: plugin
+        };
+    }
+
+    function makeConfig(name) {
+        return function () {
+            return (config && config.config && config.config[name]) || {};
+        };
+    }
+
+    main = function (name, deps, callback, relName) {
+        var cjsModule, depName, ret, map, i,
+            args = [],
+            usingExports;
+
+        //Use name if no relName
+        relName = relName || name;
+
+        //Call the callback to define the module, if necessary.
+        if (typeof callback === 'function') {
+
+            //Pull out the defined dependencies and pass the ordered
+            //values to the callback.
+            //Default to [require, exports, module] if no deps
+            deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
+            for (i = 0; i < deps.length; i += 1) {
+                map = makeMap(deps[i], relName);
+                depName = map.f;
+
+                //Fast path CommonJS standard dependencies.
+                if (depName === "require") {
+                    args[i] = makeRequire(name);
+                } else if (depName === "exports") {
+                    //CommonJS module spec 1.1
+                    args[i] = defined[name] = {};
+                    usingExports = true;
+                } else if (depName === "module") {
+                    //CommonJS module spec 1.1
+                    cjsModule = args[i] = {
+                        id: name,
+                        uri: '',
+                        exports: defined[name],
+                        config: makeConfig(name)
+                    };
+                } else if (defined.hasOwnProperty(depName) || waiting.hasOwnProperty(depName)) {
+                    args[i] = callDep(depName);
+                } else if (map.p) {
+                    map.p.load(map.n, makeRequire(relName, true), makeLoad(depName), {});
+                    args[i] = defined[depName];
+                } else if (!defining[depName]) {
+                    throw new Error(name + ' missing ' + depName);
+                }
+            }
+
+            ret = callback.apply(defined[name], args);
+
+            if (name) {
+                //If setting exports via "module" is in play,
+                //favor that over return value and exports. After that,
+                //favor a non-undefined return value over exports use.
+                if (cjsModule && cjsModule.exports !== undef &&
+                        cjsModule.exports !== defined[name]) {
+                    defined[name] = cjsModule.exports;
+                } else if (ret !== undef || !usingExports) {
+                    //Use the return value from the function.
+                    defined[name] = ret;
+                }
+            }
+        } else if (name) {
+            //May just be an object definition for the module. Only
+            //worry about defining if have a module name.
+            defined[name] = callback;
+        }
+    };
+
+    requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
+        if (typeof deps === "string") {
+            //Just return the module wanted. In this scenario, the
+            //deps arg is the module name, and second arg (if passed)
+            //is just the relName.
+            //Normalize module name, if it contains . or ..
+            return callDep(makeMap(deps, callback).f);
+        } else if (!deps.splice) {
+            //deps is a config object, not an array.
+            config = deps;
+            if (callback.splice) {
+                //callback is an array, which means it is a dependency list.
+                //Adjust args if there are dependencies
+                deps = callback;
+                callback = relName;
+                relName = null;
+            } else {
+                deps = undef;
+            }
+        }
+
+        //Support require(['a'])
+        callback = callback || function () {};
+
+        //If relName is a function, it is an errback handler,
+        //so remove it.
+        if (typeof relName === 'function') {
+            relName = forceSync;
+            forceSync = alt;
+        }
+
+        //Simulate async callback;
+        if (forceSync) {
+            main(undef, deps, callback, relName);
+        } else {
+            setTimeout(function () {
+                main(undef, deps, callback, relName);
+            }, 15);
+        }
+
+        return req;
+    };
+
+    /**
+     * Just drops the config on the floor, but returns req in case
+     * the config return value is used.
+     */
+    req.config = function (cfg) {
+        config = cfg;
+        return req;
+    };
+
+    define = function (name, deps, callback) {
+
+        //This module may not have dependencies
+        if (!deps.splice) {
+            //deps is not an array, so probably means
+            //an object literal or factory function for
+            //the value. Adjust args.
+            callback = deps;
+            deps = [];
+        }
+
+        waiting[name] = [name, deps, callback];
+    };
+
+    define.amd = {
+        jQuery: true
+    };
+}());
+;this["JST"] = this["JST"] || {};
+
+this["JST"]["app/templates/bgb-end.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'END-inner-wrapper\'>\n  <div class=\'headline\'>\n    THANKS FOR WATCHING<br/>ROUGH RIDE\n  </div>\n\n  <div class=\'end-actions\'>\n    <a href=\'http://blackgoldboom.com\' target=\'blank\' class=\'visit-link\'>VISIT THE FULL SITE FOR<br/>MORE STORIES</a>\n    <a class=\'share-icons\' target=\'blank\' href=\'http://twitter.com/share?text=Check%20out%20Black%20Gold%20Boom&url=http://www.blackgoldboom.org/\'><img src=\'assets/img/twitter-large.png\'/></a>\n        \n    <a class=\'share-icons\' target=\'blank\' href=\'http://www.facebook.com/sharer.php?u=http://www.blackgoldboom.com/\'><img src=\'assets/img/facebook-large.png\'/></a>\n    <a class=\'share-icons\' target=\'blank\' href=\'mailto:your-friend@example.com?subject=Black%20Gold%20Boom!&body=http://www.blackgoldboom.com/\'><img src=\'assets/img/email-large.png\'/></a>\n  </div>\n</div>\n<div class=\'END-footer\'>\n  Brought to you by Prairie Public, Zeega, and Localore, a national initiative produced by AIR, with financial support from the Corporation for Public Broadcasting, the Wyncote Foundation, the John D. and Catherine T. MacArthur Foundation, and the National Endowment for the Arts.\n</div>\n<div class="END-bg" style="background: url('+
+( rndImgUrl )+
+'); background-position: 50% 50%; background-repeat: no-repeat no-repeat; background-attachment: fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div>\n';
+}
+return __p;
+};
+
+this["JST"]["app/templates/bgbloader.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="loader-content">\n\t<div class="logo">\n\t\t<div class="logo-splat"></div>\n        <div class="logo-splat-under"></div>\n\t</div>\n\t<div class="intro-text">\n\t\t<p>Rumble. Screech. Bam.</p>\n\t\t<p>For the next 20 minutes or so, you\'ll see and hear stories from North Dakota oil country.</p>\n\t\t<p>This interactive documentary has 9 chapters, each with its own video. Plus there are songs, data and tips from people working there.</p>\n\t\t<p>Let\'s go.</p>\n\t\t<div class=\'fullscreen-loader\'>\n\t\t\tGET THE BEST EXPERIENCE IN\n\t\t\t<a href=\'#\' class=\'fullscreen\'> <img src="assets/img/fullscreen-icon.png" width="12" height="12"> FULL SCREEN</strong>\n\t\t</div>\n\t</div>\n</div>\n<div class="loader-logo-shelf">\n\t<a href="http://www.prairiepublic.org/" target="_blank"><img src="assets/img/logos/logo-prarie-public.png"  width="86" height="66" alt="Prarie Public"></a>\n\t<a href="http://2belowzero.org/" target="_blank"><img src="assets/img/logos/logo-2-below-zero.png" width="71" height="62" alt="2 below zero"></a>\n\t<a href="http://www.airmediaworks.org/" target="_blank"><img src="assets/img/logos/logo-air.png" width="61" height="39" alt="AIR"></a>\n\t<a href="http://airmediaworks.org/localore" target="_blank"><img src="assets/img/logos/logo-localore.png" width="153" height="34" alt="Localore"></a>\n\t<a href="http://zeega.org/" target="_blank"><img src="assets/img/logos/logo-zeega.png" width="101" height="31" alt="Zeega"></a>\n</div>\n<div class="ZEEGA-loader-bg" style="background: url('+
+( rndImgUrl )+
+'); background-position: 50% 50%; background-repeat: no-repeat no-repeat; background-attachment: fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;"></div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/controls.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="nav-box">\n    <a class=\'prev-arrow\'></a>\n    <a class=\'next-arrow\'></a>\n    <div class=\'arrow-text\'></div>\n</div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/share.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='  <div class=\'overlay-wrapper\'>\n    <div class=\'BGB-overlay-title\'><h2>SHARE BLACK GOLD BOOM\'S ROUGH RIDE</h2></div>\n    <a href=\'#\' class=\'close-modal\'><h3>close</h3></a>\n\n\n    <div class=\'BGB-overlay-content-wrapper-plain clearfix\'>\n\n      <a class=\'share-icons\' target=\'blank\' href=\'http://twitter.com/share?text=Check%20out%20Black%20Gold%20Boom&url=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/twitter-large.png\'/></a>\n        \n      <a class=\'share-icons\' target=\'blank\' href=\'http://www.facebook.com/sharer.php?u=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/facebook-large.png\'/></a>\n      <a class=\'share-icons\' target=\'blank\' href=\'mailto:your-friend@example.com?subject=Black%20Gold%20Boom!&body=http://roughride.blackgoldboom.com/\'><img src=\'assets/img/email-large.png\'/></a>\n      <br/>\n\n    </div>\n  </div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/titles.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' class=\'play-pause\'></a>\n<div class=\'title-bar-above\'>\n  <div class=\'title-level\'>\n    <h1>'+
+( title )+
+'</h1>\n    <div class=\'elapsed\'>\n      <span class=\'time-elapsed\'>1:23</span> / <span class=\'time-duration\'>4:56</span>\n    </div>\n  </div>\n  <h2>'+
+( seqTitle )+
+'</h2>\n  <div class=\'aux-controls\'>\n    <div class=\'\'><a href=\'#\' class=\'share\'>SHARE</a></div>\n    <div class=\'\'><a href=\'#\' class=\'fullscreen\'>FULLSCREEN</a></div>\n  </div>\n</div>\n<div class=\'elapsed-bar-wrapper\'>\n  <div class=\'elapsed-bar\'></div>\n</div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/ui-base.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="http://blackgoldboom.com/" target="_blank" class="bgb-logo" title="View more stories on blackgoldboom.com">\n    <img src="assets/img/bgblogo.png" width="85" height="92" alt="Black Gold Boom">\n</a>\n<div class="block-clickthrough"></div>\n<span class="bottom-credit">powered by <a href="http://zeega.org" target="_blank">zeega</a></span>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/zeega-popup.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<h1 class=\'popup-title\'>'+
+( name )+
+'</h1>\n<div id="ZEEGA-popup-'+
+( id )+
+'" class="ZEEGA-popup-project-target"></div>\n';
+ if ( caption != "" ) { 
+;__p+='\n  <div class=\'caption\'>\n    '+
+( caption )+
+'\n    <div class=\'actions\'>\n      <a href="#" class="continue">Ok, let me see</a>\n      <a href="#" class="skip">Skip the gallery</a>\n    </div>\n  </div>\n';
+ } 
+;__p+='';
+}
+return __p;
 };;
 /*
 
