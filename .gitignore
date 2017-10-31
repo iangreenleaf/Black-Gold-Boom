@@ -3,3 +3,5 @@
 *.DS_Store
 index.html
 .htaccess
+yarn-error.log
+node_modules/
