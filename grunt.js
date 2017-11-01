@@ -198,7 +198,6 @@ module.exports = function(grunt) {
       dist: {
         files: {
           "dist/release/": "assets/img/**",
-          "dist/release/fonts/": "assets/css/fonts/**",
           "assets/img/layers/": "assets/vendor/zeegaplayer/dist/release/img/layers/*",
           "assets/img/zeegaplayer/": "assets/vendor/zeegaplayer/dist/release/img/*"
         },
