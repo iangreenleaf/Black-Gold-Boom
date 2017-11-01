@@ -1,12 +1,15 @@
 {
   "dependencies": {
+    "bbb": "^0.1.16",
     "grunt": "0.3",
+    "grunt-bbb-requirejs": "^0.1.0-alpha.8",
+    "grunt-bbb-styles": "^0.1.0-alpha.5",
     "grunt-contrib-clean": "0.3",
     "grunt-contrib-copy": "0.3.2",
     "grunt-contrib-handlebars": "0.3.3",
     "grunt-contrib-jst": "0.3",
     "grunt-contrib-less": "0.3",
     "grunt-contrib-mincss": "0.1",
-    "grunt-requirejs": "0.2"
+    "grunt-contrib-requirejs": "0.3"
   }
 }
