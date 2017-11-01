@@ -3,6 +3,14 @@
 // https://github.com/cowboy/grunt/blob/master/docs/configuring.md
 module.exports = function(grunt) {
 
+  grunt.loadNpmTasks('grunt-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jst');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-handlebars');
+  grunt.loadNpmTasks('grunt-contrib-mincss');
+
   grunt.initConfig({
 
     // The clean task ensures all files are removed from the dist/ directory so
@@ -185,7 +193,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
     copy: {
       dist: {
         files: {
@@ -205,7 +213,9 @@ module.exports = function(grunt) {
   // dist/debug/templates.js, compile all the application code into
   // dist/debug/require.js, and then concatenate the require/define shim
   // almond.js and dist/debug/templates.js into the require.js file.
-  grunt.registerTask("debug", "clean lint  jst requirejs concat styles less");
+  grunt.registerTask("debug", "clean lint  jst requirejs concat less");
+  // The `styles` task has been stripped from the build because I couldn't get it working. Below is the original line.
+  //grunt.registerTask("debug", "clean lint  jst requirejs concat styles less");
 
   // The release task will run the debug tasks and then minify the
   // dist/debug/require.js file and CSS files.
