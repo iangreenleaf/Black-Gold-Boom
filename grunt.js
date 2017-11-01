@@ -3,7 +3,7 @@
 // https://github.com/cowboy/grunt/blob/master/docs/configuring.md
 module.exports = function(grunt) {
 
-  grunt.loadNpmTasks('grunt-requirejs');
+  grunt.loadNpmTasks('bbb');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-jst');
