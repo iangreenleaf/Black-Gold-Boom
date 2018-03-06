@@ -22286,9 +22286,8 @@ function(Zeega) {
                 model.trigger( "visual_ready", _this.model.id );
 
                 if ( model.get("attr").fade_in === 0 ) {
-                    _this.volume( model.get("attr").volume );
+                    _this.popcorn.volume( model.get("attr").volume );
                 }
-                _this.popcorn.pause();
             });
 
         },
@@ -22310,7 +22309,7 @@ function(Zeega) {
                 model.trigger( "visual_ready", _this.model.id );
 
                 if ( model.get("attr").fade_in === 0 ) {
-                    _this.volume( model.get("attr").volume );
+                    _this.popcorn.volume( model.get("attr").volume );
                 }
             });
         },
