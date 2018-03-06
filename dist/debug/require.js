@@ -22637,7 +22637,7 @@ function(Zeega) {
                 }.bind(this));
 
                 this.popcorn.on( "ended", function() {
-                    this.onEnded();
+                    this._onEnded();
                 }.bind(this));
             }
         },
