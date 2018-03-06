@@ -22813,7 +22813,7 @@ function(Zeega) {
         },
 
         destroy: function() {
-            if ( this.popcorn ) {
+            if ( this.popcorn && !this.popcorn.isDestroyed ) {
                 this.popcorn.pause();
                 Popcorn.destroy( this.popcorn );
             }
