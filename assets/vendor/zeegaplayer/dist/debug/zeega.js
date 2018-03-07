@@ -22084,6 +22084,8 @@ var googleCallback;
     end: toggleClass
   });
 })( Popcorn );
+// END POPCORN VENDOR
+
 zeega.define("vendor/popcorn/popcorn-complete", function(){});
 
 zeega.define('zeega_dir/plugins/media-player/media-player',[
