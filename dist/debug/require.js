@@ -23404,8 +23404,8 @@ function( Zeega, _Layer, MediaPlayer ) {
         },
 
         onExit: function() {
-
             this.mediaPlayer.pause();
+            this.mediaPlayer.destroy();
         },
 
         verifyReady: function() {
