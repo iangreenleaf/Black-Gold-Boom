@@ -22279,9 +22279,6 @@ function(Zeega) {
             this.setVolume(0);
 
             this.popcorn.on( "canplaythrough",function() {
-                _this.popcorn.play();
-                _this.popcorn.pause();
-
                 model.can_play = true;
                 model.trigger( "visual_ready", _this.model.id );
 
