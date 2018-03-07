@@ -22681,7 +22681,6 @@ function(Zeega) {
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            console.log('update', elapsed);
             this.$(".media-time-elapsed").html( convertTime( elapsed ) );
             this.$(".media-scrubber").slider("value", elapsed);
         },

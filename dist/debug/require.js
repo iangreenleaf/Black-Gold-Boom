@@ -22497,6 +22497,8 @@ var googleCallback;
     end: toggleClass
   });
 })( Popcorn );
+// END POPCORN VENDOR
+
 zeega.define("vendor/popcorn/popcorn-complete", function(){});
 
 zeega.define('zeega_dir/plugins/media-player/media-player',[
@@ -23092,7 +23094,6 @@ function(Zeega) {
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            console.log('update', elapsed);
             this.$(".media-time-elapsed").html( convertTime( elapsed ) );
             this.$(".media-scrubber").slider("value", elapsed);
         },
