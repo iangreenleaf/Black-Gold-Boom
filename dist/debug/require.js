@@ -22684,8 +22684,7 @@ function(Zeega) {
                 model = this.model;
 
             this.popcorn = Popcorn.youtube( target, src, {
-                volume: this.settings.volume * 100,
-                cue_in: this.settings.cue_in
+                volume: this.settings.volume * 100
             });
 
             this.addPopcornToControls();
@@ -22694,6 +22693,10 @@ function(Zeega) {
             this.popcorn.on( "canplaythrough",function() {
                 model.can_play = true;
                 model.trigger( "visual_ready", _this.model.id );
+
+                if ( _this.settings.cue_in !== 0 ) {
+                    _this.setCurrentTime( _this.settings.cue_in );
+                }
 
                 if ( model.get("attr").fade_in === 0 ) {
                     _this.popcorn.volume( model.get("attr").volume );
