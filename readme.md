@@ -1,5 +1,7 @@
 # Black Gold Boom :: Rough Ride
 
+Latest version of the code is at: https://github.com/iangreenleaf/Black-Gold-Boom/
+
 ## Development
 
 ### Setup
