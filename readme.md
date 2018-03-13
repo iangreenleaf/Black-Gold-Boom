@@ -1,6 +1,12 @@
 # Black Gold Boom :: Rough Ride
 
+This is the front-end client for the [Rough Ride documentary](http://roughride.blackgoldboom.com/).
+
 Latest version of the code is at: https://github.com/iangreenleaf/Black-Gold-Boom/
+
+There is a back-end Zeega server somewhere.
+*I do not know where to find that or anything about it.*
+Sorry! `¯\_(ツ)_/¯`
 
 ## Development
 
